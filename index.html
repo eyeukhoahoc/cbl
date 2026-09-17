@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Cảnh Báo Ngập Lụt Thông Minh</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 30px;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 0 20px;
+        }
+
+        /* HEADER */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #121212;
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #282828;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #181818;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #282828;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.2);
+            font-size: 24px;
+        }
+
+        h1 { font-size: 22px; font-weight: 800; }
+
+        /* BẢN ĐỒ */
+        .map-card {
+            background: #181818;
+            border: 1px solid #282828;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        #map {
+            height: 420px;
+            width: 100%;
+            border-radius: 12px;
+        }
+
+        /* KHUNG THÔNG TIN TRẠM */
+        .station-card {
+            background: #181818;
+            border: 1px solid #282828;
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .location-info h2 { font-size: 18px; margin-bottom: 5px; }
+        .location-info p { font-size: 13px; color: #b3b3b3; }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            background: #282828;
+            color: #b3b3b3;
+        }
+
+        /* CHÂN TRANG */
+        .footer-status-container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .system-status {
+            background: #181818;
+            border: 1px solid #282828;
+            color: #b3b3b3;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #1db954;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #1db954;
+        }
+
+        .footer-update { color: #ffffff; font-size: 14px; font-weight: 600; }
+
+        /* XÓA VIỀN MẶC ĐỊNH LEAFLET */
+        .leaflet-div-icon { 
+            background: transparent !important; 
+            border: none !important; 
+        }
+
+        /* KHUNG CHUẨN CÂN TÂM CẢM BIẾN (Chống lệch) */
+        .sensor-container {
+            position: relative;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* NẤM TRÒN TÂM CẢM BIẾN */
+        .sensor-core {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 8px rgba(0,0,0,0.8);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* VÒNG TRÒN SÓNG LÓE TỎA RA CHUẨN TÂM */
+        .sensor-container::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            opacity: 1;
+            z-index: 1;
+            animation: pulse-ring 1.3s infinite ease-out;
+        }
+
+        /* MÀU SẮC CHO TÂM VÀ VÒNG LÓE */
+        .sensor-green .sensor-core { background-color: #1db954; }
+        .sensor-green::after { border: 3px solid #1db954; }
+
+        .sensor-orange .sensor-core { background-color: #f39c12; }
+        .sensor-orange::after { border: 3px solid #f39c12; }
+
+        .sensor-red .sensor-core { background-color: #e74c3c; }
+        .sensor-red::after { border: 3px solid #e74c3c; }
+
+        /* HIỆU ỨNG SÓNG LÓE */
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2.6);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header>
+            <div class="brand-title">
+                <div class="brand-icon">🌊</div>
+                <h1>Hệ Thống Cảnh Báo Ngập Lụt Thông Minh</h1>
+            </div>
+        </header>
+
+        <!-- Khung chứa Bản Đồ -->
+        <div class="map-card">
+            <div id="map"></div>
+        </div>
+
+        <!-- Khung hiển thị Trạng Thái -->
+        <div class="station-card">
+            <div class="location-info">
+                <h2>Trạm Cảm Biến Hải Phòng</h2>
+                <p id="sensor-coords">Tọa độ: 20.823905, 106.556187</p>
+            </div>
+            <div class="status-badge" id="status-tag">Đang kết nối...</div>
+        </div>
+
+        <!-- Chân trang -->
+        <div class="footer-status-container">
+            <div class="system-status">
+                <span class="live-dot"></span> ĐANG TRUYỀN DỮ LIỆU SỐ
+            </div>
+            <div class="footer-update">
+                <span id="update-time">Đang tải dữ liệu Google Sheet...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyh8AGwhdA_h9m6mVvC80pSmZLTurMykJWKOUdRa81qCO3F79w-NYKWHzNNhhAwfUE7/exec";
+        const sensorLocation = [20.823905, 106.556187];
+
+        const map = L.map('map').setView(sensorLocation, 15);
+
+        L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        }).addTo(map);
+
+        let currentMarker = null;
+
+        function updateFloodUI(waterLevel, timeStr) {
+            const level = Number(waterLevel);
+            const statusTag = document.getElementById("status-tag");
+            
+            let colorClass = "";
+            let statusText = "";
+            let tagColor = "";
+
+            if (level === 0) {
+                colorClass = "sensor-green";
+                statusText = "Không ngập (An toàn)";
+                tagColor = "#1db954";
+            } else if (level === 10) {
+                colorClass = "sensor-orange";
+                statusText = "Ngập nhẹ (Cảnh báo)";
+                tagColor = "#f39c12";
+            } else if (level === 20) {
+                colorClass = "sensor-red";
+                statusText = "Ngập nặng (Nguy hiểm)";
+                tagColor = "#e74c3c";
+            } else {
+                colorClass = "sensor-green";
+                statusText = "Bình thường";
+                tagColor = "#1db954";
+            }
+
+            statusTag.innerText = statusText;
+            statusTag.style.color = tagColor;
+
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+
+            // HTML cấu trúc mới giúp sóng lóe tỏa từ chính giữa tâm ghim
+            const customIcon = L.divIcon({
+                className: '',
+                html: `<div class="sensor-container ${colorClass}"><div class="sensor-core"></div></div>`,
+                iconSize: [18, 18],
+                iconAnchor: [9, 9]
+            });
+
+            currentMarker = L.marker(sensorLocation, { icon: customIcon }).addTo(map);
+            currentMarker.bindPopup(`<b>TRẠM CẢM BIẾN</b><br>Trạng thái: <b>${statusText}</b><br>Giá trị: ${level}`);
+
+            if (timeStr) {
+                document.getElementById("update-time").innerText = "Cập nhật lần cuối lúc: " + timeStr;
+            }
+        }
+
+        function fetchSheetData() {
+            fetch(GAS_URL, { cache: "no-store" })
+                .then(response => response.json())
+                .then(data => {
+                    const waterLevel = data.vacant !== undefined ? data.vacant : data.level;
+                    const timeStr = data.time + " (" + data.date + ")";
+
+                    updateFloodUI(waterLevel, timeStr);
+                })
+                .catch(error => {
+                    console.error("Lỗi kết nối dữ liệu Sheet:", error);
+                });
+        }
+
+        fetchSheetData();
+        setInterval(fetchSheetData, 5000);
+    </script>
+</body>
+</html>
