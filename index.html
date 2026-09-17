@@ -24,7 +24,7 @@
 
         .dashboard-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
             padding: 0 20px;
         }
 
@@ -74,32 +74,72 @@
         }
 
         #map {
-            height: 420px;
+            height: 550px;
             width: 100%;
             border-radius: 12px;
         }
 
-        /* KHUNG THÔNG TIN TRẠM */
+        /* LƯỚI KHUNG TRẠM */
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .stations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .station-card {
             background: #181818;
             border: 1px solid #282828;
             border-radius: 16px;
             padding: 20px 24px;
             display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .station-header {
+            display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .location-info h2 { font-size: 18px; margin-bottom: 5px; }
-        .location-info p { font-size: 13px; color: #b3b3b3; }
+        .location-info h2 { font-size: 18px; margin-bottom: 4px; }
+        
+        .location-info p { 
+            font-size: 14px; 
+            color: #ffffff; 
+            font-weight: 500;
+        }
 
         .status-badge {
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             background: #282828;
             color: #b3b3b3;
+            white-space: nowrap;
+        }
+
+        .station-footer {
+            border-top: 1px solid #282828;
+            padding-top: 12px;
+            font-size: 14px; 
+            color: #ffffff; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .station-footer strong {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         /* CHÂN TRANG */
@@ -134,13 +174,12 @@
 
         .footer-update { color: #ffffff; font-size: 14px; font-weight: 600; }
 
-        /* XÓA VIỀN MẶC ĐỊNH LEAFLET */
+        /* LEAFLET CSS & SÓNG CHỚP NHÁY */
         .leaflet-div-icon { 
             background: transparent !important; 
             border: none !important; 
         }
 
-        /* KHUNG CHUẨN CÂN TÂM CẢM BIẾN (Chống lệch) */
         .sensor-container {
             position: relative;
             width: 18px;
@@ -150,7 +189,6 @@
             justify-content: center;
         }
 
-        /* NẤM TRÒN TÂM CẢM BIẾN */
         .sensor-core {
             width: 18px;
             height: 18px;
@@ -161,7 +199,6 @@
             z-index: 2;
         }
 
-        /* VÒNG TRÒN SÓNG LÓE TỎA RA CHUẨN TÂM */
         .sensor-container::after {
             content: "";
             position: absolute;
@@ -173,7 +210,6 @@
             animation: pulse-ring 1.3s infinite ease-out;
         }
 
-        /* MÀU SẮC CHO TÂM VÀ VÒNG LÓE */
         .sensor-green .sensor-core { background-color: #1db954; }
         .sensor-green::after { border: 3px solid #1db954; }
 
@@ -183,16 +219,22 @@
         .sensor-red .sensor-core { background-color: #e74c3c; }
         .sensor-red::after { border: 3px solid #e74c3c; }
 
-        /* HIỆU ỨNG SÓNG LÓE */
         @keyframes pulse-ring {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(2.6);
-                opacity: 0;
-            }
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.6); opacity: 0; }
+        }
+
+        /* CHỈNH TÙY CHỌN NÚT ĐỔI BẢN ĐỒ VỆ TINH PHÙ HỢP GIAO DIỆN TỐI */
+        .leaflet-control-layers {
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+            background: #181818 !important;
+            color: #ffffff !important;
+            border: 1px solid #282828 !important;
+            font-family: inherit;
+        }
+        .leaflet-control-layers-list {
+            padding: 4px;
         }
     </style>
 </head>
@@ -206,18 +248,42 @@
             </div>
         </header>
 
-        <!-- Khung chứa Bản Đồ -->
+        <!-- Khung Bản Đồ -->
         <div class="map-card">
             <div id="map"></div>
         </div>
 
-        <!-- Khung hiển thị Trạng Thái -->
-        <div class="station-card">
-            <div class="location-info">
-                <h2>Trạm Cảm Biến Hải Phòng</h2>
-                <p id="sensor-coords">Tọa độ: 20.823905, 106.556187</p>
+        <!-- Khung Hiển Thị Các Trạm -->
+        <div class="stations-grid">
+            <!-- TRẠM 1: HẢI PHÒNG -->
+            <div class="station-card">
+                <div class="station-header">
+                    <div class="location-info">
+                        <h2>Trạm Hải Phòng</h2>
+                        <p>Tọa độ: 20.823905, 106.556187</p>
+                    </div>
+                    <div class="status-badge" id="status-tag-hp">Đang kết nối...</div>
+                </div>
+                <div class="station-footer">
+                    <span>Thời gian ghi nhận:</span>
+                    <strong id="time-hp">--:--:--</strong>
+                </div>
             </div>
-            <div class="status-badge" id="status-tag">Đang kết nối...</div>
+
+            <!-- TRẠM 2: HÀ NỘI -->
+            <div class="station-card">
+                <div class="station-header">
+                    <div class="location-info">
+                        <h2>Trạm Hà Nội</h2>
+                        <p>Tọa độ: 21.028511, 105.854167</p>
+                    </div>
+                    <div class="status-badge" id="status-tag-hn">Đang kết nối...</div>
+                </div>
+                <div class="station-footer">
+                    <span>Thời gian ghi nhận:</span>
+                    <strong id="time-hn">--:--:--</strong>
+                </div>
+            </div>
         </div>
 
         <!-- Chân trang -->
@@ -226,7 +292,7 @@
                 <span class="live-dot"></span> ĐANG TRUYỀN DỮ LIỆU SỐ
             </div>
             <div class="footer-update">
-                <span id="update-time">Đang tải dữ liệu Google Sheet...</span>
+                <span id="update-time">Đồng bộ hệ thống lần cuối: Đang tải...</span>
             </div>
         </div>
     </div>
@@ -236,51 +302,74 @@
 
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycbyh8AGwhdA_h9m6mVvC80pSmZLTurMykJWKOUdRa81qCO3F79w-NYKWHzNNhhAwfUE7/exec";
-        const sensorLocation = [20.823905, 106.556187];
 
-        const map = L.map('map').setView(sensorLocation, 15);
+        const locationHP = [20.823905, 106.556187];
+        const locationHN = [21.028511, 105.854167];
 
-        L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        // 1. Tạo các lớp Bản đồ đường bộ & Bản đồ Vệ tinh
+        const googleStreet = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
             maxZoom: 20,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-        }).addTo(map);
+        });
 
-        let currentMarker = null;
+        const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
 
-        function updateFloodUI(waterLevel, timeStr) {
+        // 2. Khởi tạo bản đồ với chế độ mặc định là Đường bộ
+        const map = L.map('map', {
+            center: [20.92, 106.20],
+            zoom: 9,
+            layers: [googleStreet]
+        });
+
+        // 3. Thêm bảng chọn đổi chế độ xem bản đồ ở góc trên bên phải
+        const baseMaps = {
+            "🗺️ Đường bộ": googleStreet,
+            "🛰️ Vệ tinh": googleSatellite
+        };
+        L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+
+        let markerHP = null;
+        let markerHN = null;
+
+        function renderStation({ location, waterLevel, tagId, timeId, stationTime, currentMarker, stationName }) {
             const level = Number(waterLevel);
-            const statusTag = document.getElementById("status-tag");
+            const statusTag = document.getElementById(tagId);
+            const timeTag = document.getElementById(timeId);
             
             let colorClass = "";
             let statusText = "";
             let tagColor = "";
 
-            if (level === 0) {
+            if (level < 10) {
                 colorClass = "sensor-green";
-                statusText = "Không ngập (An toàn)";
+                statusText = `Ngập ${level}cm - An toàn`;
                 tagColor = "#1db954";
-            } else if (level === 10) {
+            } else if (level >= 10 && level < 20) {
                 colorClass = "sensor-orange";
-                statusText = "Ngập nhẹ (Cảnh báo)";
+                statusText = `Ngập ${level}cm - Cảnh báo`;
                 tagColor = "#f39c12";
-            } else if (level === 20) {
-                colorClass = "sensor-red";
-                statusText = "Ngập nặng (Nguy hiểm)";
-                tagColor = "#e74c3c";
             } else {
-                colorClass = "sensor-green";
-                statusText = "Bình thường";
-                tagColor = "#1db954";
+                colorClass = "sensor-red";
+                statusText = `Ngập ${level}cm - Nguy hiểm`;
+                tagColor = "#e74c3c";
             }
 
-            statusTag.innerText = statusText;
-            statusTag.style.color = tagColor;
+            if (statusTag) {
+                statusTag.innerText = statusText;
+                statusTag.style.color = tagColor;
+            }
+
+            if (timeTag && stationTime) {
+                timeTag.innerText = stationTime;
+            }
 
             if (currentMarker) {
                 map.removeLayer(currentMarker);
             }
 
-            // HTML cấu trúc mới giúp sóng lóe tỏa từ chính giữa tâm ghim
             const customIcon = L.divIcon({
                 className: '',
                 html: `<div class="sensor-container ${colorClass}"><div class="sensor-core"></div></div>`,
@@ -288,26 +377,46 @@
                 iconAnchor: [9, 9]
             });
 
-            currentMarker = L.marker(sensorLocation, { icon: customIcon }).addTo(map);
-            currentMarker.bindPopup(`<b>TRẠM CẢM BIẾN</b><br>Trạng thái: <b>${statusText}</b><br>Giá trị: ${level}`);
+            const newMarker = L.marker(location, { icon: customIcon }).addTo(map);
+            newMarker.bindPopup(`<b>${stationName}</b><br>Trạng thái: <b>${statusText}</b><br><small>Ghi nhận: ${stationTime || '--'}</small>`);
 
-            if (timeStr) {
-                document.getElementById("update-time").innerText = "Cập nhật lần cuối lúc: " + timeStr;
-            }
+            return newMarker;
         }
 
         function fetchSheetData() {
             fetch(GAS_URL, { cache: "no-store" })
                 .then(response => response.json())
                 .then(data => {
-                    const waterLevel = data.vacant !== undefined ? data.vacant : data.level;
-                    const timeStr = data.time + " (" + data.date + ")";
+                    const levelHP = data.vacant !== undefined ? data.vacant : 0;
+                    const timeHP = (data.time && data.date) ? `${data.time} (${data.date})` : (data.time || '--');
 
-                    updateFloodUI(waterLevel, timeStr);
+                    const levelHN = data.vacant2 !== undefined ? data.vacant2 : 0;
+                    const timeHN = (data.time2 && data.date2) ? `${data.time2} (${data.date2})` : timeHP;
+
+                    markerHP = renderStation({
+                        location: locationHP,
+                        waterLevel: levelHP,
+                        tagId: "status-tag-hp",
+                        timeId: "time-hp",
+                        stationTime: timeHP,
+                        currentMarker: markerHP,
+                        stationName: "TRẠM CẢM BIẾN HẢI PHÒNG"
+                    });
+
+                    markerHN = renderStation({
+                        location: locationHN,
+                        waterLevel: levelHN,
+                        tagId: "status-tag-hn",
+                        timeId: "time-hn",
+                        stationTime: timeHN,
+                        currentMarker: markerHN,
+                        stationName: "TRẠM CẢM BIẾN HÀ NỘI"
+                    });
+
+                    const now = new Date();
+                    document.getElementById("update-time").innerText = "Đồng bộ hệ thống lần cuối: " + now.toLocaleTimeString('vi-VN');
                 })
-                .catch(error => {
-                    console.error("Lỗi kết nối dữ liệu Sheet:", error);
-                });
+                .catch(error => console.error("Lỗi kết nối dữ liệu Sheet:", error));
         }
 
         fetchSheetData();
