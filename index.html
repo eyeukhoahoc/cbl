@@ -9,12 +9,42 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* ==========================================
+           1. CẤU HÌNH BIẾN MÀU SÁNG / TỐI (VARIABLES)
+           ========================================== */
+        :root {
+            /* Mặc định: Giao diện Tối (Dark Mode) */
+            --bg-body: #121212;
+            --bg-card: #181818;
+            --border-color: #282828;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --btn-toggle-bg: #282828;
+        }
+
+        /* Khi kích hoạt Giao diện Sáng (Light Mode) */
+        body.light-mode {
+            --bg-body: #f4f6f8;
+            --bg-card: #ffffff;
+            --border-color: #e1e4e8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --btn-toggle-bg: #e1e4e8;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -28,16 +58,17 @@
             padding: 0 20px;
         }
 
-        /* HEADER */
+        /* HEADER & NÚT CHUYỂN THEME */
         header {
             position: sticky;
             top: 0;
             z-index: 1000;
-            background-color: #121212;
+            background-color: var(--bg-body);
             display: flex;
             align-items: center;
+            justify-content: space-between; /* Đẩy logo sang trái, nút theme sang phải */
             padding: 20px 0;
-            border-bottom: 1px solid #282828;
+            border-bottom: 1px solid var(--border-color);
             width: 100%;
             margin-bottom: 25px;
         }
@@ -45,38 +76,82 @@
         .brand-title {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 18px;
         }
 
-        .brand-icon {
-            width: 50px;
-            height: 50px;
+        .brand-icon-wrapper {
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
-            background-color: #181818;
+            background-color: var(--bg-card);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #282828;
-            box-shadow: 0 0 15px rgba(29, 185, 84, 0.2);
-            font-size: 24px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.25);
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
-        h1 { font-size: 22px; font-weight: 800; }
+        .brand-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 { 
+            font-size: 24px; 
+            font-weight: 800; 
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        /* Nút Chuyển Đổi Sáng Tối */
+        .theme-toggle-btn {
+            background-color: var(--btn-toggle-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px var(--shadow-color);
+            outline: none;
+        }
+
+        .theme-toggle-btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 600px) {
+            .brand-icon-wrapper { width: 55px; height: 55px; }
+            h1 { font-size: 17px; }
+            .theme-toggle-btn { padding: 8px 12px; font-size: 12px; }
+        }
 
         /* BẢN ĐỒ */
         .map-card {
-            background: #181818;
-            border: 1px solid #282828;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 15px;
             margin-bottom: 25px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 24px var(--shadow-color);
+            position: relative;
         }
 
         #map {
             height: 550px;
             width: 100%;
             border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
 
         /* LƯỚI KHUNG TRẠM */
@@ -87,19 +162,18 @@
         }
 
         @media (max-width: 768px) {
-            .stations-grid {
-                grid-template-columns: 1fr;
-            }
+            .stations-grid { grid-template-columns: 1fr; }
         }
 
         .station-card {
-            background: #181818;
-            border: 1px solid #282828;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 20px 24px;
             display: flex;
             flex-direction: column;
             gap: 14px;
+            box-shadow: 0 4px 12px var(--shadow-color);
         }
 
         .station-header {
@@ -108,11 +182,15 @@
             align-items: center;
         }
 
-        .location-info h2 { font-size: 18px; margin-bottom: 4px; }
+        .location-info h2 { 
+            font-size: 18px; 
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
         
         .location-info p { 
             font-size: 14px; 
-            color: #ffffff; 
+            color: var(--text-secondary); 
             font-weight: 500;
         }
 
@@ -121,23 +199,23 @@
             border-radius: 20px;
             font-size: 13px;
             font-weight: 700;
-            background: #282828;
-            color: #b3b3b3;
+            background: var(--btn-toggle-bg);
+            color: var(--text-secondary);
             white-space: nowrap;
         }
 
         .station-footer {
-            border-top: 1px solid #282828;
+            border-top: 1px solid var(--border-color);
             padding-top: 12px;
             font-size: 14px; 
-            color: #ffffff; 
+            color: var(--text-secondary); 
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .station-footer strong {
-            color: #ffffff;
+            color: var(--text-primary);
             font-size: 14px;
             font-weight: 600;
         }
@@ -152,9 +230,9 @@
         }
 
         .system-status {
-            background: #181818;
-            border: 1px solid #282828;
-            color: #b3b3b3;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
             padding: 8px 18px;
             border-radius: 20px;
             font-size: 13px;
@@ -162,6 +240,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 2px 8px var(--shadow-color);
         }
 
         .live-dot {
@@ -172,7 +251,7 @@
             box-shadow: 0 0 8px #1db954;
         }
 
-        .footer-update { color: #ffffff; font-size: 14px; font-weight: 600; }
+        .footer-update { color: var(--text-secondary); font-size: 14px; font-weight: 600; }
 
         /* LEAFLET CSS & SÓNG CHỚP NHÁY */
         .leaflet-div-icon { 
@@ -224,18 +303,18 @@
             100% { transform: scale(2.6); opacity: 0; }
         }
 
-        /* CHỈNH TÙY CHỌN NÚT ĐỔI BẢN ĐỒ VỆ TINH PHÙ HỢP GIAO DIỆN TỐI */
+        /* NÚT CHUYỂN BẢN ĐỒ KHÓA TRONG BẢN ĐỒ */
+        .leaflet-top { top: 10px !important; }
+        .leaflet-right { right: 10px !important; }
         .leaflet-control-layers {
             border-radius: 8px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-            background: #181818 !important;
-            color: #ffffff !important;
-            border: 1px solid #282828 !important;
+            box-shadow: 0 4px 12px var(--shadow-color) !important;
+            background: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
             font-family: inherit;
         }
-        .leaflet-control-layers-list {
-            padding: 4px;
-        }
+        .leaflet-control-layers-list { padding: 4px; }
     </style>
 </head>
 <body>
@@ -243,9 +322,18 @@
     <div class="dashboard-container">
         <header>
             <div class="brand-title">
-                <div class="brand-icon">🌊</div>
+                <div class="brand-icon-wrapper">
+                    <!-- ĐƯỜNG DẪN ẢNH TƯƠNG ĐỐI TRONG THƯ MỤC DỰ ÁN -->
+                    <img class="brand-logo-img" src="image/3.avif" alt="Logo Dự Án" onerror="this.src='https://via.placeholder.com/150/1db954/ffffff?text=LOGO'">
+                </div>
                 <h1>Hệ Thống Cảnh Báo Ngập Lụt Thông Minh</h1>
             </div>
+
+            <!-- Nút Chuyển Đổi Chế Độ Sáng / Tối -->
+            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Giao diện Tối</span>
+            </button>
         </header>
 
         <!-- Khung Bản Đồ -->
@@ -301,12 +389,53 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+        // ==========================================
+        // CẤU HÌNH XỬ LÝ GIAO DIỆN SÁNG / TỐI (THEME)
+        // ==========================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeBtn = document.getElementById('theme-btn');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.innerText = '☀️';
+                themeText.innerText = 'Giao diện Sáng';
+            } else {
+                document.body.classList.remove('light-mode');
+                themeIcon.innerText = '🌙';
+                themeText.innerText = 'Giao diện Tối';
+            }
+        }
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+
+            if (isLight) {
+                localStorage.setItem('theme', 'light');
+                themeIcon.innerText = '☀️';
+                themeText.innerText = 'Giao diện Sáng';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.innerText = '🌙';
+                themeText.innerText = 'Giao diện Tối';
+            }
+        }
+
+        // Chạy hàm kiểm tra theme ngay khi tải trang
+        initTheme();
+
+        // ==========================================
+        // CẤU HÌNH BẢN ĐỒ LEAFLET & LẤY DỮ LIỆU SHEET
+        // ==========================================
         const GAS_URL = "https://script.google.com/macros/s/AKfycbyh8AGwhdA_h9m6mVvC80pSmZLTurMykJWKOUdRa81qCO3F79w-NYKWHzNNhhAwfUE7/exec";
 
         const locationHP = [20.823905, 106.556187];
         const locationHN = [21.028511, 105.854167];
 
-        // 1. Tạo các lớp Bản đồ đường bộ & Bản đồ Vệ tinh
         const googleStreet = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
             maxZoom: 20,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
@@ -317,14 +446,12 @@
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
 
-        // 2. Khởi tạo bản đồ với chế độ mặc định là Đường bộ
         const map = L.map('map', {
             center: [20.92, 106.20],
             zoom: 9,
             layers: [googleStreet]
         });
 
-        // 3. Thêm bảng chọn đổi chế độ xem bản đồ ở góc trên bên phải
         const baseMaps = {
             "🗺️ Đường bộ": googleStreet,
             "🛰️ Vệ tinh": googleSatellite
