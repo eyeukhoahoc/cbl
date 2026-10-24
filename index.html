@@ -159,6 +159,7 @@
         .routing-clear-btn:hover { transform: translateY(-2px); border-color: var(--danger); color: var(--danger); }
         .routing-clear-btn:active { transform: scale(0.97); }
 
+        /* Nút Vị trí & Nút Chỉ dẫn */
         .routing-location-btn {
             position: absolute;
             top: 24px;
@@ -178,6 +179,7 @@
         .routing-location-btn:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent); }
         .routing-location-btn:active { transform: scale(0.97); }
         .routing-location-btn.loading { opacity: 0.6; cursor: wait; }
+        #btn-toggle-directions { left: 130px; display: none; } /* Dịch sang phải 1 chút */
 
         .route-marker {
             width: 28px; height: 28px;
@@ -342,48 +344,34 @@
         }
 
         /* ==========================================
-           PANEL CHỈ DẪN CỦA LRM — LÀM ĐẸP
+           ẨN/HIỆN BẢNG CHỈ DẪN CỦA LRM
            ========================================== */
         .leaflet-routing-container {
-            background: var(--bg-card-solid) !important;
-            color: var(--text-primary) !important;
-            border-radius: 14px !important;
-            box-shadow: 0 12px 32px var(--shadow-color) !important;
-            border: 1px solid var(--border-strong) !important;
-            max-height: 58vh;
-            overflow-y: auto;
-            font-family: inherit !important;
-            width: 320px !important;
-            transition: background 0.3s ease, color 0.3s ease;
+            display: none !important; 
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
+        .leaflet-routing-container.show-panel {
+            display: block !important;
+            opacity: 1;
+            position: absolute;
+            top: 70px; 
+            right: 10px;
+            z-index: 1000;
+            width: 300px;
+            max-height: 400px;
+        }
+
+        /* CSS Làm đẹp bảng chỉ dẫn */
+        .leaflet-routing-container { background: var(--bg-card-solid) !important; color: var(--text-primary) !important; border-radius: 14px !important; box-shadow: 0 12px 32px var(--shadow-color) !important; border: 1px solid var(--border-strong) !important; overflow-y: auto; font-family: inherit !important; }
         .leaflet-routing-container::-webkit-scrollbar { width: 6px; }
-        .leaflet-routing-container::-webkit-scrollbar-thumb {
-            background: var(--border-strong); border-radius: 6px;
-        }
-        .leaflet-routing-alt {
-            border-bottom: 1px solid var(--border-color) !important;
-            padding: 10px 14px !important;
-            font-size: 13px !important;
-            line-height: 1.5 !important;
-        }
+        .leaflet-routing-container::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 6px; }
+        .leaflet-routing-alt { border-bottom: 1px solid var(--border-color) !important; padding: 10px 14px !important; font-size: 13px !important; line-height: 1.5 !important; }
         .leaflet-routing-alt:last-child { border-bottom: none !important; }
-        .leaflet-routing-alt h2 {
-            font-size: 14px !important;
-            font-weight: 800 !important;
-            color: var(--text-primary) !important;
-            margin-bottom: 6px !important;
-        }
-        .leaflet-routing-alt h3 {
-            font-size: 12px !important;
-            font-weight: 700 !important;
-            color: var(--text-secondary) !important;
-        }
+        .leaflet-routing-alt h2 { font-size: 14px !important; font-weight: 800 !important; color: var(--text-primary) !important; margin-bottom: 6px !important; }
+        .leaflet-routing-alt h3 { font-size: 12px !important; font-weight: 700 !important; color: var(--text-secondary) !important; }
         .leaflet-routing-alt table { width: 100%; }
-        .leaflet-routing-alt td {
-            padding: 4px 2px !important;
-            color: var(--text-primary) !important;
-            font-size: 12.5px !important;
-        }
+        .leaflet-routing-alt td { padding: 4px 2px !important; color: var(--text-primary) !important; font-size: 12.5px !important; }
         .leaflet-routing-alt tr:hover td { background: var(--btn-toggle-bg) !important; }
         .leaflet-routing-icon { filter: invert(0.85); }
         body.light-mode .leaflet-routing-icon { filter: none; }
@@ -392,95 +380,31 @@
         /* ==========================================
            PANEL CẬP NHẬT TỌA ĐỘ (SECRET)
            ========================================== */
-        .coord-overlay {
-            position: fixed; inset: 0; z-index: 2000;
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(4px);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
-            padding: 20px;
-        }
+        .coord-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 20px; }
         .coord-overlay.open { opacity: 1; pointer-events: auto; }
-        .coord-panel {
-            width: 100%; max-width: 420px;
-            background: var(--bg-card-solid);
-            border: 1px solid var(--border-strong);
-            border-radius: 18px;
-            padding: 22px 22px 18px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.6);
-            transform: translateY(16px) scale(0.97);
-            transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-            max-height: 90vh; overflow-y: auto;
-            position: relative;
-        }
+        .coord-panel { width: 100%; max-width: 420px; background: var(--bg-card-solid); border: 1px solid var(--border-strong); border-radius: 18px; padding: 22px 22px 18px; box-shadow: 0 24px 60px rgba(0,0,0,0.6); transform: translateY(16px) scale(0.97); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); max-height: 90vh; overflow-y: auto; position: relative; }
         .coord-overlay.open .coord-panel { transform: translateY(0) scale(1); }
-        .coord-panel h3 {
-            font-size: 17px; font-weight: 800; margin-bottom: 4px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .coord-panel .coord-sub {
-            font-size: 12.5px; color: var(--text-secondary);
-            margin-bottom: 16px; line-height: 1.5;
-        }
-        .coord-group {
-            border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 12px 14px; margin-bottom: 12px;
-            background: var(--btn-toggle-bg);
-        }
-        .coord-group-title {
-            font-size: 12.5px; font-weight: 800; color: var(--text-primary);
-            margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
-        }
+        .coord-panel h3 { font-size: 17px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .coord-panel .coord-sub { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+        .coord-group { border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; background: var(--btn-toggle-bg); }
+        .coord-group-title { font-size: 12.5px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
         .coord-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .coord-field { display: flex; flex-direction: column; gap: 4px; }
         .coord-field label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-        .coord-field input {
-            width: 100%; padding: 9px 11px;
-            background: var(--bg-body); color: var(--text-primary);
-            border: 1px solid var(--border-strong); border-radius: 9px;
-            font-size: 13.5px; font-family: inherit; font-variant-numeric: tabular-nums;
-            outline: none; transition: border-color 0.25s ease, box-shadow 0.25s ease;
-        }
-        .coord-field input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(29,185,84,0.18);
-        }
+        .coord-field input { width: 100%; padding: 9px 11px; background: var(--bg-body); color: var(--text-primary); border: 1px solid var(--border-strong); border-radius: 9px; font-size: 13.5px; font-family: inherit; font-variant-numeric: tabular-nums; outline: none; transition: border-color 0.25s ease, box-shadow 0.25s ease; }
+        .coord-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(29,185,84,0.18); }
         .coord-actions { display: flex; gap: 10px; margin-top: 6px; }
-        .coord-btn {
-            flex: 1; padding: 11px 14px; border-radius: 11px;
-            font-size: 13.5px; font-weight: 800; font-family: inherit;
-            cursor: pointer; border: 1px solid transparent;
-            transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
-        }
+        .coord-btn { flex: 1; padding: 11px 14px; border-radius: 11px; font-size: 13.5px; font-weight: 800; font-family: inherit; cursor: pointer; border: 1px solid transparent; transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease; }
         .coord-btn:active { transform: scale(0.97); }
-        .coord-btn.primary {
-            background: var(--accent); color: #06210f;
-            box-shadow: 0 6px 18px rgba(29,185,84,0.35);
-        }
+        .coord-btn.primary { background: var(--accent); color: #06210f; box-shadow: 0 6px 18px rgba(29,185,84,0.35); }
         .coord-btn.primary:hover { box-shadow: 0 8px 24px rgba(29,185,84,0.5); }
         .coord-btn.primary:disabled { opacity: 0.55; cursor: wait; }
-        .coord-btn.ghost {
-            background: var(--btn-toggle-bg); color: var(--text-primary);
-            border-color: var(--border-strong);
-        }
+        .coord-btn.ghost { background: var(--btn-toggle-bg); color: var(--text-primary); border-color: var(--border-strong); }
         .coord-btn.ghost:hover { border-color: var(--text-secondary); }
-        .coord-msg {
-            font-size: 12.5px; font-weight: 700; margin-top: 12px;
-            min-height: 18px; text-align: center;
-            transition: color 0.25s ease;
-        }
+        .coord-msg { font-size: 12.5px; font-weight: 700; margin-top: 12px; min-height: 18px; text-align: center; transition: color 0.25s ease; }
         .coord-msg.ok { color: var(--accent); }
         .coord-msg.err { color: var(--danger); }
-        .coord-close {
-            position: absolute; top: 14px; right: 16px;
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--btn-toggle-bg); border: 1px solid var(--border-color);
-            color: var(--text-secondary); cursor: pointer;
-            font-size: 16px; line-height: 1;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.25s ease, color 0.25s ease;
-        }
+        .coord-close { position: absolute; top: 14px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: var(--btn-toggle-bg); border: 1px solid var(--border-color); color: var(--text-secondary); cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: background 0.25s ease, color 0.25s ease; }
         .coord-close:hover { background: var(--danger); color: #fff; }
     </style>
 </head>
@@ -505,8 +429,13 @@
             <div id="map"></div>
             
             <!-- Nút Lấy vị trí hiện tại -->
-            <button class="routing-location-btn" id="btn-my-location" title="Lấy vị trí hiện tại của bạn">
-                📍 Vị trí của tôi
+            <button class="routing-location-btn" id="btn-my-location" title="Theo dõi vị trí hiện tại của bạn">
+                📍 Vị trí
+            </button>
+
+            <!-- Nút Mở/Đóng bảng chỉ dẫn -->
+            <button class="routing-location-btn" id="btn-toggle-directions" title="Xem chỉ dẫn đường đi">
+                📋 Chỉ dẫn
             </button>
 
             <div class="routing-hint" id="routing-hint">
@@ -808,14 +737,16 @@
         setInterval(fetchSheetData, 5000);
 
         /* ==========================================
-           DẪN ĐƯỜNG ĐƠN GIẢN — NÉ VÙNG TRÒN 100M QUANH TRẠM
+           DẪN ĐƯỜNG
            ========================================== */
         let routeA = null, routeB = null, markerA = null, markerB = null, routingControl = null;
         let dangerCircle = null;
+        let currentFetchId = 0;
 
         const hintEl = document.getElementById('routing-hint');
         const hintText = document.getElementById('routing-hint-text');
         const clearBtn = document.getElementById('routing-clear');
+        const btnToggleDirections = document.getElementById('btn-toggle-directions');
 
         const RADIUS_DEG = 0.001; // ~ 111 mét
 
@@ -836,6 +767,10 @@
             hintEl.classList.remove('hidden');
             hintText.innerText = 'Nhấn điểm A trên bản đồ';
             clearBtn.style.display = 'none';
+            btnToggleDirections.style.display = 'none';
+            
+            btnToggleDirections.style.color = 'var(--text-primary)';
+            btnToggleDirections.style.borderColor = 'var(--border-strong)';
         }
         clearBtn.addEventListener('click', resetRouting);
 
@@ -862,24 +797,68 @@
         }
 
         function renderRouting(waypoints, isAvoiding) {
+            // Giữ trạng thái bảng chỉ dẫn (nếu đang mở thì vẫn mở)
+            const oldPanel = document.querySelector('.leaflet-routing-container');
+            const isPanelOpen = oldPanel ? oldPanel.classList.contains('show-panel') : false;
+
+            // Xóa control cũ để tránh bị vẽ đè đường cũ
+            if (routingControl) {
+                map.removeControl(routingControl);
+                routingControl = null;
+            }
+
             routingControl = L.Routing.control({
                 waypoints: waypoints,
                 router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1', language: 'vi' }),
                 lineOptions: { styles: [{ color: isAvoiding ? '#f39c12' : '#1db954', weight: 6, opacity: 0.85 }] },
-                createMarker: () => null, addWaypoints: false, draggableWaypoints: false,
-                fitSelectedRoutes: true, show: true, routeWhileDragging: false, collapsible: true
+                createMarker: () => null, 
+                addWaypoints: false, 
+                draggableWaypoints: false,
+                fitSelectedRoutes: false, // Tắt tự động zoom khi GPS nhảy
+                show: true, 
+                routeWhileDragging: false, 
+                collapsible: true
             }).addTo(map);
+
+            // Phục hồi trạng thái mở của bảng
+            if (isPanelOpen) {
+                setTimeout(() => {
+                    const newPanel = document.querySelector('.leaflet-routing-container');
+                    if (newPanel) newPanel.classList.add('show-panel');
+                }, 50);
+            }
+
             hintEl.classList.add('hidden');
+            btnToggleDirections.style.display = 'flex';
         }
+
+        btnToggleDirections.addEventListener('click', () => {
+            const panel = document.querySelector('.leaflet-routing-container');
+            if (panel) {
+                panel.classList.toggle('show-panel');
+                if (panel.classList.contains('show-panel')) {
+                    btnToggleDirections.style.color = 'var(--accent)';
+                    btnToggleDirections.style.borderColor = 'var(--accent)';
+                } else {
+                    btnToggleDirections.style.color = 'var(--text-primary)';
+                    btnToggleDirections.style.borderColor = 'var(--border-strong)';
+                }
+            }
+        });
 
         async function buildRoute() {
             if (!routeA || !routeB) return;
-            if (routingControl) { map.removeControl(routingControl); routingControl = null; }
+            
+            currentFetchId++;
+            const myFetchId = currentFetchId;
+
             if (dangerCircle) { map.removeLayer(dangerCircle); dangerCircle = null; }
 
             if (hpStatus === 'green') {
-                renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
-                hintText.innerText = 'Trạm an toàn - Dẫn đường bình thường';
+                if (myFetchId === currentFetchId) {
+                    renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
+                    hintText.innerText = 'Trạm an toàn - Dẫn đường bình thường';
+                }
                 return;
             }
 
@@ -890,6 +869,8 @@
             hintText.innerText = 'Đang tìm đường né vùng ngập...';
 
             const direct = await fetchOsrm([routeA, routeB]);
+            if (myFetchId !== currentFetchId) return;
+
             if (direct && direct.routes && direct.routes.length > 0) {
                 const c = direct.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
                 if (isRouteSafe(c)) {
@@ -903,7 +884,7 @@
             const centerLng = locationHP[1];
             
             const angle = Math.atan2(routeB.lat - routeA.lat, routeB.lng - routeA.lng);
-            const offset = 0.0015; // ~ 160 mét
+            const offset = 0.0015;
 
             const ptLeft = [
                 centerLat + offset * Math.sin(angle + Math.PI/2),
@@ -915,6 +896,8 @@
             ];
 
             const routeL = await fetchOsrm([routeA, {lat: ptLeft[0], lng: ptLeft[1]}, routeB]);
+            if (myFetchId !== currentFetchId) return;
+
             if (routeL && routeL.routes && routeL.routes.length > 0) {
                 const cL = routeL.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
                 if (isRouteSafe(cL)) {
@@ -925,6 +908,8 @@
             }
 
             const routeR = await fetchOsrm([routeA, {lat: ptRight[0], lng: ptRight[1]}, routeB]);
+            if (myFetchId !== currentFetchId) return;
+
             if (routeR && routeR.routes && routeR.routes.length > 0) {
                 const cR = routeR.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
                 if (isRouteSafe(cR)) {
@@ -956,24 +941,21 @@
                 clearBtn.style.display = 'block';
             }
         });
+
         /* ==========================================
-           THEO DÕI GPS LIÊN TỤC (REAL-TIME TRACKING)
+           THEO DÕI GPS LIÊN TỤC
            ========================================== */
         const btnMyLocation = document.getElementById('btn-my-location');
         
-        let watchId = null;          // ID của tiến trình theo dõi
-        let isTracking = false;      // Trạng thái đang bật/tắt
-        let lastUpdateTime = 0;      // Thời gian cập nhật cuối
-        let lastRouteALatLng = null; // Lưu vị trí A cũ để so sánh
+        let watchId = null;
+        let isTracking = false;
 
         btnMyLocation.addEventListener('click', () => {
-            // Nếu đang theo dõi -> Bấm lần nữa là TẮT
             if (isTracking) {
                 stopTracking();
                 return;
             }
 
-            // Kiểm tra bảo mật HTTPS
             if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
                 alert("⚠️ LỖI BẢO MẬT:\nTrình duyệt yêu cầu trang web phải chạy trên HTTPS mới cho phép lấy GPS.\n\nHãy đưa code lên Github Pages, Vercel hoặc Netlify để chạy thử nhé!");
                 return;
@@ -990,42 +972,33 @@
         function startTracking() {
             isTracking = true;
             btnMyLocation.classList.add('loading');
-            btnMyLocation.innerHTML = '🛑 Dừng theo dõi';
+            btnMyLocation.innerHTML = '🛑 Dừng';
             btnMyLocation.style.borderColor = '#e74c3c';
             btnMyLocation.style.color = '#e74c3c';
 
-            // Bắt đầu theo dõi vị trí liên tục
             watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     const currentLatLng = L.latLng(lat, lng);
 
-                    // Nếu là lần đầu tiên lấy được vị trí
                     if (!routeA) {
                         resetRouting();
                         routeA = currentLatLng;
                         markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
                         map.flyTo(routeA, 15);
-                        lastRouteALatLng = currentLatLng;
-                        
                         hintEl.classList.remove('hidden');
-                        hintText.innerText = 'Đang theo dõi vị trí... Nhấn chọn điểm B';
+                        hintText.innerText = 'Đang theo dõi... Nhấn chọn điểm B';
                         clearBtn.style.display = 'block';
                         return;
                     }
 
-                    // Tính khoảng cách từ vị trí cũ đến vị trí mới (đơn vị: mét)
                     const distanceMoved = routeA.distanceTo(currentLatLng);
 
-                    // Chỉ cập nhật nếu đã di chuyển > 10 mét (tránh giật bản đồ)
                     if (distanceMoved > 10) {
                         routeA = currentLatLng;
-                        
-                        // Cập nhật lại Marker A
                         if (markerA) markerA.setLatLng(routeA);
                         
-                        // Nếu đã có điểm B, tự động vẽ lại đường đi mới
                         if (routeB) {
                             buildRoute();
                         }
@@ -1033,14 +1006,13 @@
                 },
                 (error) => {
                     console.warn("Lỗi GPS: ", error);
-                    // Chỉ báo lỗi nếu là lỗi từ chối cấp quyền
                     if (error.code === 1) {
                         alert("Bạn đã từ chối cấp quyền vị trí. Hãy bật lại trong cài đặt trình duyệt.");
                         stopTracking();
                     }
                 },
                 {
-                    enableHighAccuracy: true,  // Bật GPS độ chính xác cao khi di chuyển
+                    enableHighAccuracy: true,
                     timeout: 10000,
                     maximumAge: 0
                 }
@@ -1054,10 +1026,11 @@
             }
             isTracking = false;
             btnMyLocation.classList.remove('loading');
-            btnMyLocation.innerHTML = '📍 Vị trí của tôi';
+            btnMyLocation.innerHTML = '📍 Vị trí';
             btnMyLocation.style.borderColor = 'var(--border-strong)';
             btnMyLocation.style.color = 'var(--text-primary)';
         }
+
         /* ==========================================
            PANEL CẬP NHẬT TỌA ĐỘ (SECRET)
            ========================================== */
