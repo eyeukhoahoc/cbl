@@ -7,314 +7,481 @@
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
     <style>
-        /* ==========================================
-           1. CẤU HÌNH BIẾN MÀU SÁNG / TỐI (VARIABLES)
-           ========================================== */
         :root {
-            /* Mặc định: Giao diện Tối (Dark Mode) */
-            --bg-body: #121212;
-            --bg-card: #181818;
-            --border-color: #282828;
+            --bg-body: #0f1115;
+            --bg-body-gradient: radial-gradient(1200px 600px at 50% -10%, rgba(29,185,84,0.08), transparent 60%);
+            --bg-card: rgba(24, 24, 24, 0.85);
+            --bg-card-solid: #181818;
+            --border-color: rgba(255,255,255,0.07);
+            --border-strong: rgba(255,255,255,0.12);
             --text-primary: #ffffff;
-            --text-secondary: #b3b3b3;
-            --shadow-color: rgba(0, 0, 0, 0.5);
-            --btn-toggle-bg: #282828;
+            --text-secondary: #a8b0bd;
+            --shadow-color: rgba(0, 0, 0, 0.55);
+            --btn-toggle-bg: rgba(255,255,255,0.06);
+            --accent: #1db954;
+            --accent-glow: rgba(29,185,84,0.35);
+            --warn: #f39c12;
+            --danger: #e74c3c;
+            --glass-blur: 14px;
         }
-
-        /* Khi kích hoạt Giao diện Sáng (Light Mode) */
         body.light-mode {
-            --bg-body: #f4f6f8;
-            --bg-card: #ffffff;
-            --border-color: #e1e4e8;
-            --text-primary: #1a1a1a;
-            --text-secondary: #555555;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --btn-toggle-bg: #e1e4e8;
+            --bg-body: #eef1f6;
+            --bg-body-gradient: radial-gradient(1200px 600px at 50% -10%, rgba(29,185,84,0.10), transparent 60%);
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-card-solid: #ffffff;
+            --border-color: rgba(0,0,0,0.06);
+            --border-strong: rgba(0,0,0,0.10);
+            --text-primary: #12161c;
+            --text-secondary: #5a6472;
+            --shadow-color: rgba(20, 30, 50, 0.10);
+            --btn-toggle-bg: rgba(0,0,0,0.04);
+            --accent-glow: rgba(29,185,84,0.25);
         }
-
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-body);
+            background-image: var(--bg-body-gradient);
+            background-attachment: fixed;
             color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-bottom: 30px;
+            display: flex; flex-direction: column; align-items: center;
+            padding-bottom: 40px;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            -webkit-font-smoothing: antialiased;
         }
+        .dashboard-container { width: 100%; max-width: 1100px; padding: 0 20px; }
 
-        .dashboard-container {
-            width: 100%;
-            max-width: 1100px;
-            padding: 0 20px;
-        }
-
-        /* HEADER & NÚT CHUYỂN THEME */
         header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: var(--bg-body);
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Đẩy logo sang trái, nút theme sang phải */
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-color);
-            width: 100%;
-            margin-bottom: 25px;
+            position: sticky; top: 0; z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 0; margin-bottom: 28px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            background: linear-gradient(to bottom, var(--bg-body) 70%, transparent);
         }
-
-        .brand-title {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
+        .brand-title { display: flex; align-items: center; gap: 16px; animation: fadeSlideDown 0.6s cubic-bezier(0.22,1,0.36,1); }
         .brand-icon-wrapper {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            background-color: var(--bg-card);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--border-color);
-            box-shadow: 0 0 20px rgba(29, 185, 84, 0.25);
-            overflow: hidden;
-            flex-shrink: 0;
+            width: 64px; height: 64px; border-radius: 50%;
+            background: var(--bg-card-solid);
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--border-strong);
+            box-shadow: 0 0 24px var(--accent-glow), inset 0 0 12px rgba(29,185,84,0.08);
+            overflow: hidden; flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease;
         }
-
-        .brand-logo-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .brand-icon-wrapper:hover { transform: scale(1.06) rotate(-3deg); box-shadow: 0 0 32px var(--accent-glow); }
+        .brand-logo-img { width: 100%; height: 100%; object-fit: cover; }
+        h1 {
+            font-size: 22px; font-weight: 800; line-height: 1.2; letter-spacing: -0.4px;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        h1 { 
-            font-size: 24px; 
-            font-weight: 800; 
-            line-height: 1.2;
-            color: var(--text-primary);
-        }
-
-        /* Nút Chuyển Đổi Sáng Tối */
         .theme-toggle-btn {
-            background-color: var(--btn-toggle-bg);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            padding: 10px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 10px var(--shadow-color);
-            outline: none;
+            background: var(--btn-toggle-bg); color: var(--text-primary);
+            border: 1px solid var(--border-strong);
+            padding: 10px 16px; border-radius: 30px; cursor: pointer;
+            font-size: 14px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 14px var(--shadow-color);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s ease;
+            backdrop-filter: blur(8px);
         }
-
-        .theme-toggle-btn:hover {
-            opacity: 0.85;
-            transform: translateY(-1px);
-        }
-
+        .theme-toggle-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px var(--shadow-color); }
+        .theme-toggle-btn:active { transform: translateY(0) scale(0.97); }
         @media (max-width: 600px) {
-            .brand-icon-wrapper { width: 55px; height: 55px; }
-            h1 { font-size: 17px; }
+            .brand-icon-wrapper { width: 52px; height: 52px; }
+            h1 { font-size: 16px; }
             .theme-toggle-btn { padding: 8px 12px; font-size: 12px; }
         }
 
-        /* BẢN ĐỒ */
         .map-card {
             background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 24px var(--shadow-color);
-            position: relative;
+            border-radius: 20px; padding: 12px; margin-bottom: 24px;
+            box-shadow: 0 12px 40px var(--shadow-color);
+            position: relative; overflow: hidden;
+            animation: fadeSlideUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.05s both;
         }
+        .map-card::before {
+            content: ""; position: absolute; inset: 0; border-radius: 20px; padding: 1px;
+            background: linear-gradient(135deg, rgba(29,185,84,0.35), transparent 40%, transparent 60%, rgba(29,185,84,0.15));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none; opacity: 0.7;
+        }
+        #map { height: 540px; width: 100%; border-radius: 14px; position: relative; overflow: hidden; z-index: 1; }
 
-        #map {
-            height: 550px;
-            width: 100%;
+        .routing-hint {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            z-index: 500;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-strong);
             border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
+            padding: 10px 14px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+            box-shadow: 0 8px 24px var(--shadow-color);
+            display: flex; align-items: center; gap: 10px;
+            opacity: 0.95;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .routing-hint.hidden { opacity: 0; transform: translateY(8px); pointer-events: none; }
+        .routing-hint .step-badge {
+            background: var(--accent); color: #06210f;
+            border-radius: 8px; padding: 3px 9px;
+            font-size: 11px; font-weight: 900; letter-spacing: 0.5px;
         }
 
-        /* LƯỚI KHUNG TRẠM */
-        .stations-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+        .routing-clear-btn {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            z-index: 500;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-strong);
+            border-radius: 10px;
+            padding: 9px 14px;
+            font-size: 12.5px; font-weight: 800; font-family: inherit;
+            color: var(--text-primary);
+            cursor: pointer;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            transition: transform 0.25s ease, border-color 0.25s ease;
         }
+        .routing-clear-btn:hover { transform: translateY(-2px); border-color: var(--danger); color: var(--danger); }
+        .routing-clear-btn:active { transform: scale(0.97); }
 
-        @media (max-width: 768px) {
-            .stations-grid { grid-template-columns: 1fr; }
+        .routing-location-btn {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            z-index: 500;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-strong);
+            border-radius: 10px;
+            padding: 9px 14px;
+            font-size: 12.5px; font-weight: 800; font-family: inherit;
+            color: var(--text-primary);
+            cursor: pointer;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            transition: transform 0.25s ease, border-color 0.25s ease;
+            display: flex; align-items: center; gap: 6px;
         }
+        .routing-location-btn:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent); }
+        .routing-location-btn:active { transform: scale(0.97); }
+        .routing-location-btn.loading { opacity: 0.6; cursor: wait; }
+
+        .route-marker {
+            width: 28px; height: 28px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            border: 2px solid #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .route-marker span {
+            transform: rotate(45deg);
+            font-size: 12px; font-weight: 900; color: #fff;
+        }
+        .route-marker.a { background: #1db954; }
+        .route-marker.b { background: #e74c3c; }
+
+        .stations-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        @media (max-width: 768px) { .stations-grid { grid-template-columns: 1fr; } }
 
         .station-card {
+            position: relative;
             background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            box-shadow: 0 4px 12px var(--shadow-color);
+            border-radius: 18px; padding: 22px 24px;
+            display: flex; flex-direction: column; gap: 16px;
+            box-shadow: 0 6px 24px var(--shadow-color);
+            transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease, border-color 0.35s ease;
+            overflow: hidden;
+            animation: fadeSlideUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
         }
-
-        .station-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .station-card:nth-child(1) { animation-delay: 0.12s; }
+        .station-card:nth-child(2) { animation-delay: 0.2s; }
+        .station-card::after {
+            content: ""; position: absolute; top: -60%; left: -20%; width: 60%; height: 120%;
+            background: radial-gradient(circle, rgba(29,185,84,0.10), transparent 70%);
+            opacity: 0; transition: opacity 0.5s ease, transform 0.6s ease; pointer-events: none;
         }
-
-        .location-info h2 { 
-            font-size: 18px; 
-            margin-bottom: 4px;
-            color: var(--text-primary);
+        .station-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px var(--shadow-color); border-color: var(--border-strong); }
+        .station-card:hover::after { opacity: 1; transform: translateX(40%); }
+        .station-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .location-info h2 {
+            font-size: 18px; margin-bottom: 4px; letter-spacing: -0.3px;
+            display: flex; align-items: center; gap: 8px;
         }
-        
-        .location-info p { 
-            font-size: 14px; 
-            color: var(--text-secondary); 
-            font-weight: 500;
-        }
-
+        .location-info h2::before { content: "📍"; font-size: 16px; }
+        .location-info p { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
         .status-badge {
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            background: var(--btn-toggle-bg);
-            color: var(--text-secondary);
-            white-space: nowrap;
+            padding: 8px 14px; border-radius: 20px;
+            font-size: 12.5px; font-weight: 700;
+            background: var(--btn-toggle-bg); color: var(--text-secondary);
+            white-space: nowrap; border: 1px solid var(--border-color);
+            transition: color 0.4s ease, background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
         }
-
+        .status-badge.alert { animation: badgePulse 2s infinite ease-in-out; }
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0); }
+            50% { box-shadow: 0 0 0 6px rgba(231,76,60,0.15); }
+        }
+        .sensor-extra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .sensor-extra-item {
+            background: var(--btn-toggle-bg); border: 1px solid var(--border-color);
+            border-radius: 14px; padding: 14px 16px;
+            display: flex; flex-direction: column; gap: 8px;
+            transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+        }
+        .sensor-extra-item:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+        .sensor-extra-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .sensor-extra-label { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+        .sensor-extra-icon { font-size: 16px; filter: drop-shadow(0 0 6px rgba(255,255,255,0.15)); }
+        .sensor-extra-value {
+            font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+            color: var(--text-primary); font-variant-numeric: tabular-nums;
+            transition: color 0.3s ease;
+        }
+        .sensor-extra-value.value-pop { animation: valuePop 0.45s cubic-bezier(0.22,1,0.36,1); }
+        @keyframes valuePop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.12); color: var(--accent); }
+            100% { transform: scale(1); }
+        }
+        .mini-bar { height: 4px; border-radius: 4px; background: var(--border-color); overflow: hidden; }
+        .mini-bar-fill { height: 100%; width: 0%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), #4ade80); transition: width 0.8s cubic-bezier(0.22,1,0.36,1); }
+        .mini-bar-fill.temp { background: linear-gradient(90deg, #f39c12, #fbbf24); }
+        .mini-bar-fill.humid { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
         .station-footer {
-            border-top: 1px solid var(--border-color);
-            padding-top: 12px;
-            font-size: 14px; 
-            color: var(--text-secondary); 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-top: 1px solid var(--border-color); padding-top: 14px;
+            font-size: 13.5px; color: var(--text-secondary);
+            display: flex; justify-content: space-between; align-items: center;
         }
+        .station-footer strong { color: var(--text-primary); font-size: 13.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-        .station-footer strong {
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        /* CHÂN TRANG */
         .footer-status-container {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+            animation: fadeSlideUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.3s both;
         }
-
         .system-status {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 8px var(--shadow-color);
+            background: var(--bg-card); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); color: var(--text-secondary);
+            padding: 9px 20px; border-radius: 24px;
+            font-size: 12.5px; font-weight: 700; letter-spacing: 0.4px;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 4px 14px var(--shadow-color);
+            cursor: pointer; user-select: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, color 0.25s ease;
         }
-
+        .system-status:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-strong);
+            color: var(--text-primary);
+            box-shadow: 0 8px 22px var(--shadow-color);
+        }
+        .system-status:active { transform: translateY(0) scale(0.98); }
         .live-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #1db954;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #1db954;
+            width: 8px; height: 8px; background-color: var(--accent);
+            border-radius: 50%; box-shadow: 0 0 10px var(--accent);
+            animation: liveBlink 1.6s infinite ease-in-out;
         }
-
-        .footer-update { color: var(--text-secondary); font-size: 14px; font-weight: 600; }
-
-        /* LEAFLET CSS & SÓNG CHỚP NHÁY */
-        .leaflet-div-icon { 
-            background: transparent !important; 
-            border: none !important; 
+        @keyframes liveBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.85); }
         }
+        .footer-update { color: var(--text-secondary); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
 
-        .sensor-container {
-            position: relative;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        .leaflet-div-icon { background: transparent !important; border: none !important; }
+        .sensor-container { position: relative; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
         .sensor-core {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 8px rgba(0,0,0,0.8);
-            position: relative;
-            z-index: 2;
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 2px solid #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.9);
+            position: relative; z-index: 2;
         }
-
         .sensor-container::after {
-            content: "";
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            opacity: 1;
-            z-index: 1;
-            animation: pulse-ring 1.3s infinite ease-out;
+            content: ""; position: absolute; width: 18px; height: 18px;
+            border-radius: 50%; opacity: 1; z-index: 1;
+            animation: pulse-ring 1.5s infinite ease-out;
         }
-
-        .sensor-green .sensor-core { background-color: #1db954; }
-        .sensor-green::after { border: 3px solid #1db954; }
-
-        .sensor-orange .sensor-core { background-color: #f39c12; }
-        .sensor-orange::after { border: 3px solid #f39c12; }
-
-        .sensor-red .sensor-core { background-color: #e74c3c; }
-        .sensor-red::after { border: 3px solid #e74c3c; }
-
-        @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2.6); opacity: 0; }
-        }
-
-        /* NÚT CHUYỂN BẢN ĐỒ KHÓA TRONG BẢN ĐỒ */
+        .sensor-green .sensor-core { background-color: var(--accent); }
+        .sensor-green::after { border: 3px solid var(--accent); }
+        .sensor-orange .sensor-core { background-color: var(--warn); }
+        .sensor-orange::after { border: 3px solid var(--warn); }
+        .sensor-red .sensor-core { background-color: var(--danger); }
+        .sensor-red::after { border: 3px solid var(--danger); }
+        @keyframes pulse-ring { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.7); opacity: 0; } }
         .leaflet-top { top: 10px !important; }
         .leaflet-right { right: 10px !important; }
         .leaflet-control-layers {
-            border-radius: 8px !important;
-            box-shadow: 0 4px 12px var(--shadow-color) !important;
-            background: var(--bg-card) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 6px 20px var(--shadow-color) !important;
+            background: var(--bg-card-solid) !important;
             color: var(--text-primary) !important;
             border: 1px solid var(--border-color) !important;
-            font-family: inherit;
+            font-family: inherit; overflow: hidden;
         }
-        .leaflet-control-layers-list { padding: 4px; }
+        .leaflet-control-layers-list { padding: 6px; }
+        .leaflet-popup-content-wrapper { border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important; }
+
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeSlideDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+
+        /* ==========================================
+           PANEL CHỈ DẪN CỦA LRM — LÀM ĐẸP
+           ========================================== */
+        .leaflet-routing-container {
+            background: var(--bg-card-solid) !important;
+            color: var(--text-primary) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 12px 32px var(--shadow-color) !important;
+            border: 1px solid var(--border-strong) !important;
+            max-height: 58vh;
+            overflow-y: auto;
+            font-family: inherit !important;
+            width: 320px !important;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .leaflet-routing-container::-webkit-scrollbar { width: 6px; }
+        .leaflet-routing-container::-webkit-scrollbar-thumb {
+            background: var(--border-strong); border-radius: 6px;
+        }
+        .leaflet-routing-alt {
+            border-bottom: 1px solid var(--border-color) !important;
+            padding: 10px 14px !important;
+            font-size: 13px !important;
+            line-height: 1.5 !important;
+        }
+        .leaflet-routing-alt:last-child { border-bottom: none !important; }
+        .leaflet-routing-alt h2 {
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            color: var(--text-primary) !important;
+            margin-bottom: 6px !important;
+        }
+        .leaflet-routing-alt h3 {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: var(--text-secondary) !important;
+        }
+        .leaflet-routing-alt table { width: 100%; }
+        .leaflet-routing-alt td {
+            padding: 4px 2px !important;
+            color: var(--text-primary) !important;
+            font-size: 12.5px !important;
+        }
+        .leaflet-routing-alt tr:hover td { background: var(--btn-toggle-bg) !important; }
+        .leaflet-routing-icon { filter: invert(0.85); }
+        body.light-mode .leaflet-routing-icon { filter: none; }
+        .leaflet-routing-geocoders { display: none !important; }
+
+        /* ==========================================
+           PANEL CẬP NHẬT TỌA ĐỘ (SECRET)
+           ========================================== */
+        .coord-overlay {
+            position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+        .coord-overlay.open { opacity: 1; pointer-events: auto; }
+        .coord-panel {
+            width: 100%; max-width: 420px;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-strong);
+            border-radius: 18px;
+            padding: 22px 22px 18px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+            transform: translateY(16px) scale(0.97);
+            transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+            max-height: 90vh; overflow-y: auto;
+            position: relative;
+        }
+        .coord-overlay.open .coord-panel { transform: translateY(0) scale(1); }
+        .coord-panel h3 {
+            font-size: 17px; font-weight: 800; margin-bottom: 4px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .coord-panel .coord-sub {
+            font-size: 12.5px; color: var(--text-secondary);
+            margin-bottom: 16px; line-height: 1.5;
+        }
+        .coord-group {
+            border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 12px 14px; margin-bottom: 12px;
+            background: var(--btn-toggle-bg);
+        }
+        .coord-group-title {
+            font-size: 12.5px; font-weight: 800; color: var(--text-primary);
+            margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+        }
+        .coord-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .coord-field { display: flex; flex-direction: column; gap: 4px; }
+        .coord-field label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .coord-field input {
+            width: 100%; padding: 9px 11px;
+            background: var(--bg-body); color: var(--text-primary);
+            border: 1px solid var(--border-strong); border-radius: 9px;
+            font-size: 13.5px; font-family: inherit; font-variant-numeric: tabular-nums;
+            outline: none; transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .coord-field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(29,185,84,0.18);
+        }
+        .coord-actions { display: flex; gap: 10px; margin-top: 6px; }
+        .coord-btn {
+            flex: 1; padding: 11px 14px; border-radius: 11px;
+            font-size: 13.5px; font-weight: 800; font-family: inherit;
+            cursor: pointer; border: 1px solid transparent;
+            transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+        }
+        .coord-btn:active { transform: scale(0.97); }
+        .coord-btn.primary {
+            background: var(--accent); color: #06210f;
+            box-shadow: 0 6px 18px rgba(29,185,84,0.35);
+        }
+        .coord-btn.primary:hover { box-shadow: 0 8px 24px rgba(29,185,84,0.5); }
+        .coord-btn.primary:disabled { opacity: 0.55; cursor: wait; }
+        .coord-btn.ghost {
+            background: var(--btn-toggle-bg); color: var(--text-primary);
+            border-color: var(--border-strong);
+        }
+        .coord-btn.ghost:hover { border-color: var(--text-secondary); }
+        .coord-msg {
+            font-size: 12.5px; font-weight: 700; margin-top: 12px;
+            min-height: 18px; text-align: center;
+            transition: color 0.25s ease;
+        }
+        .coord-msg.ok { color: var(--accent); }
+        .coord-msg.err { color: var(--danger); }
+        .coord-close {
+            position: absolute; top: 14px; right: 16px;
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--btn-toggle-bg); border: 1px solid var(--border-color);
+            color: var(--text-secondary); cursor: pointer;
+            font-size: 16px; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        .coord-close:hover { background: var(--danger); color: #fff; }
     </style>
 </head>
 <body>
@@ -323,47 +490,72 @@
         <header>
             <div class="brand-title">
                 <div class="brand-icon-wrapper">
-                    <!-- ĐƯỜNG DẪN ẢNH TƯƠNG ĐỐI TRONG THƯ MỤC DỰ ÁN -->
                     <img class="brand-logo-img" src="image/3.avif" alt="Logo Dự Án" onerror="this.src='https://via.placeholder.com/150/1db954/ffffff?text=LOGO'">
                 </div>
                 <h1>Hệ Thống Cảnh Báo Ngập Lụt Thông Minh</h1>
             </div>
 
-            <!-- Nút Chuyển Đổi Chế Độ Sáng / Tối -->
             <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">
                 <span id="theme-icon">🌙</span>
                 <span id="theme-text">Giao diện Tối</span>
             </button>
         </header>
 
-        <!-- Khung Bản Đồ -->
         <div class="map-card">
             <div id="map"></div>
+            
+            <!-- Nút Lấy vị trí hiện tại -->
+            <button class="routing-location-btn" id="btn-my-location" title="Lấy vị trí hiện tại của bạn">
+                📍 Vị trí của tôi
+            </button>
+
+            <div class="routing-hint" id="routing-hint">
+                <span class="step-badge">DẪN ĐƯỜNG</span>
+                <span id="routing-hint-text">Nhấn điểm A trên bản đồ</span>
+            </div>
+            <button class="routing-clear-btn" id="routing-clear" style="display:none;">✕ Xóa tuyến</button>
         </div>
 
-        <!-- Khung Hiển Thị Các Trạm -->
         <div class="stations-grid">
-            <!-- TRẠM 1: HẢI PHÒNG -->
             <div class="station-card">
                 <div class="station-header">
                     <div class="location-info">
                         <h2>Trạm Hải Phòng</h2>
-                        <p>Tọa độ: 20.823905, 106.556187</p>
+                        <p id="coord-text-hp">Tọa độ: 20.823905, 106.556187</p>
                     </div>
                     <div class="status-badge" id="status-tag-hp">Đang kết nối...</div>
                 </div>
+
+                <div class="sensor-extra-grid">
+                    <div class="sensor-extra-item">
+                        <div class="sensor-extra-top">
+                            <span class="sensor-extra-label">Nhiệt độ</span>
+                            <span class="sensor-extra-icon">🌡️</span>
+                        </div>
+                        <span class="sensor-extra-value" id="temp-hp">--</span>
+                        <div class="mini-bar"><div class="mini-bar-fill temp" id="temp-bar"></div></div>
+                    </div>
+                    <div class="sensor-extra-item">
+                        <div class="sensor-extra-top">
+                            <span class="sensor-extra-label">Độ ẩm</span>
+                            <span class="sensor-extra-icon">💧</span>
+                        </div>
+                        <span class="sensor-extra-value" id="humid-hp">--</span>
+                        <div class="mini-bar"><div class="mini-bar-fill humid" id="humid-bar"></div></div>
+                    </div>
+                </div>
+
                 <div class="station-footer">
                     <span>Thời gian ghi nhận:</span>
                     <strong id="time-hp">--:--:--</strong>
                 </div>
             </div>
 
-            <!-- TRẠM 2: HÀ NỘI -->
             <div class="station-card">
                 <div class="station-header">
                     <div class="location-info">
                         <h2>Trạm Hà Nội</h2>
-                        <p>Tọa độ: 21.028511, 105.854167</p>
+                        <p id="coord-text-hn">Tọa độ: 21.028511, 105.854167</p>
                     </div>
                     <div class="status-badge" id="status-tag-hn">Đang kết nối...</div>
                 </div>
@@ -374,9 +566,8 @@
             </div>
         </div>
 
-        <!-- Chân trang -->
         <div class="footer-status-container">
-            <div class="system-status">
+            <div class="system-status" id="secret-trigger" title="Nhấn để cập nhật tọa độ">
                 <span class="live-dot"></span> ĐANG TRUYỀN DỮ LIỆU SỐ
             </div>
             <div class="footer-update">
@@ -385,19 +576,59 @@
         </div>
     </div>
 
-    <!-- Leaflet JS -->
+    <div class="coord-overlay" id="coord-overlay">
+        <div class="coord-panel">
+            <button class="coord-close" id="coord-close" title="Đóng">✕</button>
+            <h3>⚙️ Cập nhật tọa độ trạm</h3>
+            <p class="coord-sub">Ghi trực tiếp vào Google Sheet qua Apps Script. Dashboard sẽ tự đồng bộ ở lần fetch kế tiếp (≤ 5 giây).</p>
+
+            <div class="coord-group">
+                <div class="coord-group-title">📍 Trạm Hải Phòng (A9 / B9)</div>
+                <div class="coord-row">
+                    <div class="coord-field">
+                        <label>Vĩ độ (lat)</label>
+                        <input type="text" id="in-lat-hp" inputmode="decimal" placeholder="20.823905">
+                    </div>
+                    <div class="coord-field">
+                        <label>Kinh độ (lng)</label>
+                        <input type="text" id="in-lng-hp" inputmode="decimal" placeholder="106.556187">
+                    </div>
+                </div>
+            </div>
+
+            <div class="coord-group">
+                <div class="coord-group-title">📍 Trạm Hà Nội (A11 / B11)</div>
+                <div class="coord-row">
+                    <div class="coord-field">
+                        <label>Vĩ độ (lat)</label>
+                        <input type="text" id="in-lat-hn" inputmode="decimal" placeholder="21.028511">
+                    </div>
+                    <div class="coord-field">
+                        <label>Kinh độ (lng)</label>
+                        <input type="text" id="in-lng-hn" inputmode="decimal" placeholder="105.854167">
+                    </div>
+                </div>
+            </div>
+
+            <div class="coord-actions">
+                <button class="coord-btn ghost" id="btn-fill-current">Lấy hiện tại</button>
+                <button class="coord-btn primary" id="btn-save">Lưu lên Sheet</button>
+            </div>
+            <div class="coord-msg" id="coord-msg"></div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
     <script>
-        // ==========================================
-        // CẤU HÌNH XỬ LÝ GIAO DIỆN SÁNG / TỐI (THEME)
-        // ==========================================
+        /* ==========================================
+           THEME
+           ========================================== */
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
-            const themeBtn = document.getElementById('theme-btn');
             const themeIcon = document.getElementById('theme-icon');
             const themeText = document.getElementById('theme-text');
-
             if (savedTheme === 'light') {
                 document.body.classList.add('light-mode');
                 themeIcon.innerText = '☀️';
@@ -408,12 +639,10 @@
                 themeText.innerText = 'Giao diện Tối';
             }
         }
-
         function toggleTheme() {
             const isLight = document.body.classList.toggle('light-mode');
             const themeIcon = document.getElementById('theme-icon');
             const themeText = document.getElementById('theme-text');
-
             if (isLight) {
                 localStorage.setItem('theme', 'light');
                 themeIcon.innerText = '☀️';
@@ -424,89 +653,92 @@
                 themeText.innerText = 'Giao diện Tối';
             }
         }
-
-        // Chạy hàm kiểm tra theme ngay khi tải trang
         initTheme();
 
-        // ==========================================
-        // CẤU HÌNH BẢN ĐỒ LEAFLET & LẤY DỮ LIỆU SHEET
-        // ==========================================
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyh8AGwhdA_h9m6mVvC80pSmZLTurMykJWKOUdRa81qCO3F79w-NYKWHzNNhhAwfUE7/exec";
+        /* ==========================================
+           MAP & DATA
+           ========================================== */
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbynga20oUtnQcFMjlWy3hpzASVgBeDcqPNFaoW0chhNjAsICWO0xdKsbzJwhPvdxHRL/exec";
 
-        const locationHP = [20.823905, 106.556187];
-        const locationHN = [21.028511, 105.854167];
+        const DEFAULT_HP = [20.823905, 106.556187];
+        const DEFAULT_HN = [21.028511, 105.854167];
+
+        let locationHP = DEFAULT_HP.slice();
+        let locationHN = DEFAULT_HN.slice();
+        let hpStatus = 'green';
 
         const googleStreet = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3']
         });
-
         const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3']
         });
 
         const map = L.map('map', {
-            center: [20.92, 106.20],
-            zoom: 9,
-            layers: [googleStreet]
+            center: [20.92, 106.20], zoom: 12, layers: [googleStreet], zoomControl: true
         });
 
-        const baseMaps = {
+        L.control.layers({
             "🗺️ Đường bộ": googleStreet,
             "🛰️ Vệ tinh": googleSatellite
-        };
-        L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+        }, null, { position: 'topright' }).addTo(map);
 
         let markerHP = null;
         let markerHN = null;
+        const prevValues = { temp: null, humid: null };
 
-        function renderStation({ location, waterLevel, tagId, timeId, stationTime, currentMarker, stationName }) {
+        function popElement(el) {
+            el.classList.remove('value-pop');
+            void el.offsetWidth;
+            el.classList.add('value-pop');
+        }
+
+        function parseCoord(latStr, lngStr, fallback) {
+            const lat = parseFloat(String(latStr).replace(',', '.'));
+            const lng = parseFloat(String(lngStr).replace(',', '.'));
+            if (isNaN(lat) || isNaN(lng)) return fallback.slice();
+            if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return fallback.slice();
+            return [lat, lng];
+        }
+
+        function renderStation({ location, waterLevel, tagId, timeId, stationTime, currentMarker, stationName, coordTextId }) {
             const level = Number(waterLevel);
             const statusTag = document.getElementById(tagId);
             const timeTag = document.getElementById(timeId);
-            
-            let colorClass = "";
-            let statusText = "";
-            let tagColor = "";
+            const coordTag = coordTextId ? document.getElementById(coordTextId) : null;
 
+            let colorClass, statusText, tagColor, isAlert = false;
             if (level < 10) {
-                colorClass = "sensor-green";
-                statusText = `Ngập ${level}cm - An toàn`;
-                tagColor = "#1db954";
+                colorClass = "sensor-green"; statusText = `Ngập ${level}cm - An toàn`; tagColor = "#1db954";
             } else if (level >= 10 && level < 20) {
-                colorClass = "sensor-orange";
-                statusText = `Ngập ${level}cm - Cảnh báo`;
-                tagColor = "#f39c12";
+                colorClass = "sensor-orange"; statusText = `Ngập ${level}cm - Cảnh báo`; tagColor = "#f39c12"; isAlert = true;
             } else {
-                colorClass = "sensor-red";
-                statusText = `Ngập ${level}cm - Nguy hiểm`;
-                tagColor = "#e74c3c";
+                colorClass = "sensor-red"; statusText = `Ngập ${level}cm - Nguy hiểm`; tagColor = "#e74c3c"; isAlert = true;
             }
 
             if (statusTag) {
                 statusTag.innerText = statusText;
                 statusTag.style.color = tagColor;
+                statusTag.style.borderColor = tagColor + '55';
+                statusTag.classList.toggle('alert', isAlert);
             }
+            if (timeTag && stationTime) timeTag.innerText = stationTime;
+            if (coordTag) coordTag.innerText = `Tọa độ: ${location[0].toFixed(6)}, ${location[1].toFixed(6)}`;
 
-            if (timeTag && stationTime) {
-                timeTag.innerText = stationTime;
-            }
-
-            if (currentMarker) {
-                map.removeLayer(currentMarker);
-            }
+            if (currentMarker) map.removeLayer(currentMarker);
 
             const customIcon = L.divIcon({
                 className: '',
                 html: `<div class="sensor-container ${colorClass}"><div class="sensor-core"></div></div>`,
-                iconSize: [18, 18],
-                iconAnchor: [9, 9]
+                iconSize: [18, 18], iconAnchor: [9, 9]
             });
 
             const newMarker = L.marker(location, { icon: customIcon }).addTo(map);
-            newMarker.bindPopup(`<b>${stationName}</b><br>Trạng thái: <b>${statusText}</b><br><small>Ghi nhận: ${stationTime || '--'}</small>`);
-
+            newMarker.bindPopup(
+                `<b>${stationName}</b><br>Trạng thái: <b>${statusText}</b><br>` +
+                `<small>Tọa độ: ${location[0].toFixed(6)}, ${location[1].toFixed(6)}</small><br>` +
+                `<small>Ghi nhận: ${stationTime || '--'}</small>`
+            );
             return newMarker;
         }
 
@@ -514,40 +746,355 @@
             fetch(GAS_URL, { cache: "no-store" })
                 .then(response => response.json())
                 .then(data => {
+                    locationHP = parseCoord(data.lat_hp, data.lng_hp, DEFAULT_HP);
+                    locationHN = parseCoord(data.lat_hn, data.lng_hn, DEFAULT_HN);
+
                     const levelHP = data.vacant !== undefined ? data.vacant : 0;
                     const timeHP = (data.time && data.date) ? `${data.time} (${data.date})` : (data.time || '--');
+                    const tempVal = (data.vacant2 !== undefined && data.vacant2 !== '') ? Number(data.vacant2) : null;
+                    const humidVal = (data.vacant3 !== undefined && data.vacant3 !== '') ? Number(data.vacant3) : null;
 
-                    const levelHN = data.vacant2 !== undefined ? data.vacant2 : 0;
-                    const timeHN = (data.time2 && data.date2) ? `${data.time2} (${data.date2})` : timeHP;
+                    const lvl = Number(levelHP);
+                    if (lvl < 10) hpStatus = 'green';
+                    else if (lvl < 20) hpStatus = 'orange';
+                    else hpStatus = 'red';
+
+                    const tempEl = document.getElementById("temp-hp");
+                    const humidEl = document.getElementById("humid-hp");
+                    const tempBar = document.getElementById("temp-bar");
+                    const humidBar = document.getElementById("humid-bar");
+
+                    if (tempVal !== null && !isNaN(tempVal)) {
+                        tempEl.innerText = `${tempVal}°C`;
+                        tempBar.style.width = Math.min(Math.max(tempVal, 0), 100) + '%';
+                        if (prevValues.temp !== null && prevValues.temp !== tempVal) popElement(tempEl);
+                        prevValues.temp = tempVal;
+                    } else {
+                        tempEl.innerText = '--'; tempBar.style.width = '0%';
+                    }
+
+                    if (humidVal !== null && !isNaN(humidVal)) {
+                        humidEl.innerText = `${humidVal}%`;
+                        humidBar.style.width = Math.min(Math.max(humidVal, 0), 100) + '%';
+                        if (prevValues.humid !== null && prevValues.humid !== humidVal) popElement(humidEl);
+                        prevValues.humid = humidVal;
+                    } else {
+                        humidEl.innerText = '--'; humidBar.style.width = '0%';
+                    }
 
                     markerHP = renderStation({
-                        location: locationHP,
-                        waterLevel: levelHP,
-                        tagId: "status-tag-hp",
-                        timeId: "time-hp",
-                        stationTime: timeHP,
-                        currentMarker: markerHP,
-                        stationName: "TRẠM CẢM BIẾN HẢI PHÒNG"
+                        location: locationHP, waterLevel: levelHP,
+                        tagId: "status-tag-hp", timeId: "time-hp", stationTime: timeHP,
+                        currentMarker: markerHP, stationName: "TRẠM CẢM BIẾN HẢI PHÒNG",
+                        coordTextId: "coord-text-hp"
                     });
 
+                    const levelHN = data.vacant !== undefined ? data.vacant : 0;
                     markerHN = renderStation({
-                        location: locationHN,
-                        waterLevel: levelHN,
-                        tagId: "status-tag-hn",
-                        timeId: "time-hn",
-                        stationTime: timeHN,
-                        currentMarker: markerHN,
-                        stationName: "TRẠM CẢM BIẾN HÀ NỘI"
+                        location: locationHN, waterLevel: levelHN,
+                        tagId: "status-tag-hn", timeId: "time-hn", stationTime: timeHP,
+                        currentMarker: markerHN, stationName: "TRẠM CẢM BIẾN HÀ NỘI (TƯỢNG TRƯNG)",
+                        coordTextId: "coord-text-hn"
                     });
 
                     const now = new Date();
-                    document.getElementById("update-time").innerText = "Đồng bộ hệ thống lần cuối: " + now.toLocaleTimeString('vi-VN');
+                    document.getElementById("update-time").innerText =
+                        "Đồng bộ hệ thống lần cuối: " + now.toLocaleTimeString('vi-VN');
                 })
                 .catch(error => console.error("Lỗi kết nối dữ liệu Sheet:", error));
         }
 
         fetchSheetData();
         setInterval(fetchSheetData, 5000);
+
+        /* ==========================================
+           DẪN ĐƯỜNG ĐƠN GIẢN — NÉ VÙNG TRÒN 100M QUANH TRẠM
+           ========================================== */
+        let routeA = null, routeB = null, markerA = null, markerB = null, routingControl = null;
+        let dangerCircle = null;
+
+        const hintEl = document.getElementById('routing-hint');
+        const hintText = document.getElementById('routing-hint-text');
+        const clearBtn = document.getElementById('routing-clear');
+
+        const RADIUS_DEG = 0.001; // ~ 111 mét
+
+        function makeRouteIcon(letter, cls) {
+            return L.divIcon({
+                className: '', html: `<div class="route-marker ${cls}"><span>${letter}</span></div>`,
+                iconSize: [28, 28], iconAnchor: [14, 28]
+            });
+        }
+
+        function resetRouting() {
+            if (routingControl) { map.removeControl(routingControl); routingControl = null; }
+            if (markerA) { map.removeLayer(markerA); markerA = null; }
+            if (markerB) { map.removeLayer(markerB); markerB = null; }
+            if (dangerCircle) { map.removeLayer(dangerCircle); dangerCircle = null; }
+            
+            routeA = null; routeB = null;
+            hintEl.classList.remove('hidden');
+            hintText.innerText = 'Nhấn điểm A trên bản đồ';
+            clearBtn.style.display = 'none';
+        }
+        clearBtn.addEventListener('click', resetRouting);
+
+        function getDist(p1, p2) {
+            return Math.hypot(p1[0] - p2[0], p1[1] - p2[1]);
+        }
+
+        function isRouteSafe(coords) {
+            if (!coords) return true;
+            const center = locationHP; 
+            for (let i = 0; i < coords.length - 1; i++) {
+                if (getDist(coords[i], center) < RADIUS_DEG) return false;
+                if (getDist(coords[i+1], center) < RADIUS_DEG) return false;
+            }
+            return true;
+        }
+
+        function fetchOsrm(waypoints) {
+            return new Promise(resolve => {
+                const coords = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
+                fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`)
+                    .then(r => r.json()).then(data => resolve(data)).catch(() => resolve(null));
+            });
+        }
+
+        function renderRouting(waypoints, isAvoiding) {
+            routingControl = L.Routing.control({
+                waypoints: waypoints,
+                router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1', language: 'vi' }),
+                lineOptions: { styles: [{ color: isAvoiding ? '#f39c12' : '#1db954', weight: 6, opacity: 0.85 }] },
+                createMarker: () => null, addWaypoints: false, draggableWaypoints: false,
+                fitSelectedRoutes: true, show: true, routeWhileDragging: false, collapsible: true
+            }).addTo(map);
+            hintEl.classList.add('hidden');
+        }
+
+        async function buildRoute() {
+            if (!routeA || !routeB) return;
+            if (routingControl) { map.removeControl(routingControl); routingControl = null; }
+            if (dangerCircle) { map.removeLayer(dangerCircle); dangerCircle = null; }
+
+            if (hpStatus === 'green') {
+                renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
+                hintText.innerText = 'Trạm an toàn - Dẫn đường bình thường';
+                return;
+            }
+
+            dangerCircle = L.circle(locationHP, {
+                radius: 100, color: '#e74c3c', fillColor: '#e74c3c', fillOpacity: 0.2, weight: 2, dashArray: '5,5'
+            }).addTo(map);
+
+            hintText.innerText = 'Đang tìm đường né vùng ngập...';
+
+            const direct = await fetchOsrm([routeA, routeB]);
+            if (direct && direct.routes && direct.routes.length > 0) {
+                const c = direct.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                if (isRouteSafe(c)) {
+                    renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
+                    hintText.innerText = 'Tuyến A→B không đi qua vùng ngập';
+                    return;
+                }
+            }
+
+            const centerLat = locationHP[0];
+            const centerLng = locationHP[1];
+            
+            const angle = Math.atan2(routeB.lat - routeA.lat, routeB.lng - routeA.lng);
+            const offset = 0.0015; // ~ 160 mét
+
+            const ptLeft = [
+                centerLat + offset * Math.sin(angle + Math.PI/2),
+                centerLng + offset * Math.cos(angle + Math.PI/2)
+            ];
+            const ptRight = [
+                centerLat + offset * Math.sin(angle - Math.PI/2),
+                centerLng + offset * Math.cos(angle - Math.PI/2)
+            ];
+
+            const routeL = await fetchOsrm([routeA, {lat: ptLeft[0], lng: ptLeft[1]}, routeB]);
+            if (routeL && routeL.routes && routeL.routes.length > 0) {
+                const cL = routeL.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                if (isRouteSafe(cL)) {
+                    renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(ptLeft[0], ptLeft[1]), L.latLng(routeB.lat, routeB.lng)], true);
+                    hintText.innerText = '⚠️ Đã tự động né vùng ngập';
+                    return;
+                }
+            }
+
+            const routeR = await fetchOsrm([routeA, {lat: ptRight[0], lng: ptRight[1]}, routeB]);
+            if (routeR && routeR.routes && routeR.routes.length > 0) {
+                const cR = routeR.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                if (isRouteSafe(cR)) {
+                    renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(ptRight[0], ptRight[1]), L.latLng(routeB.lat, routeB.lng)], true);
+                    hintText.innerText = '⚠️ Đã tự động né vùng ngập';
+                    return;
+                }
+            }
+
+            renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
+            hintText.innerText = '⚠️ Không có đường né, hãy chú ý!';
+        }
+
+        map.on('click', function(e) {
+            if (!routeA) {
+                routeA = e.latlng;
+                markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
+                hintText.innerText = 'Nhấn điểm B trên bản đồ';
+                clearBtn.style.display = 'block';
+            } else if (!routeB) {
+                routeB = e.latlng;
+                markerB = L.marker(routeB, { icon: makeRouteIcon('B', 'b') }).addTo(map);
+                buildRoute();
+            } else {
+                resetRouting();
+                routeA = e.latlng;
+                markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
+                hintText.innerText = 'Nhấn điểm B trên bản đồ';
+                clearBtn.style.display = 'block';
+            }
+        });
+
+        /* ==========================================
+           LẤY GPS VỊ TRÍ HIỆN TẠI CỦA ĐIỆN THOẠI
+           ========================================== */
+        const btnMyLocation = document.getElementById('btn-my-location');
+
+        btnMyLocation.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                alert("Trình duyệt của bạn không hỗ trợ lấy vị trí GPS.");
+                return;
+            }
+
+            btnMyLocation.classList.add('loading');
+            btnMyLocation.innerHTML = '⏳ Đang lấy...';
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    resetRouting();
+
+                    routeA = L.latLng(lat, lng);
+                    markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
+                    
+                    map.flyTo(routeA, 15);
+
+                    hintEl.classList.remove('hidden');
+                    hintText.innerText = 'Đã lấy vị trí! Nhấn chọn điểm B trên bản đồ';
+                    clearBtn.style.display = 'block';
+
+                    btnMyLocation.classList.remove('loading');
+                    btnMyLocation.innerHTML = '📍 Vị trí của tôi';
+                },
+                (error) => {
+                    let msg = "Lỗi không lấy được vị trí.";
+                    if (error.code === 1) msg = "Bạn đã từ chối cấp quyền vị trí. Hãy bật lại trong cài đặt trình duyệt.";
+                    else if (error.code === 2) msg = "Không xác định được vị trí (Sóng GPS yếu).";
+                    else if (error.code === 3) msg = "Quá thời gian lấy vị trí.";
+                    
+                    alert(msg);
+                    btnMyLocation.classList.remove('loading');
+                    btnMyLocation.innerHTML = '📍 Vị trí của tôi';
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        });
+
+        /* ==========================================
+           PANEL CẬP NHẬT TỌA ĐỘ (SECRET)
+           ========================================== */
+        const overlay     = document.getElementById('coord-overlay');
+        const trigger     = document.getElementById('secret-trigger');
+        const closeBtn    = document.getElementById('coord-close');
+        const fillBtn     = document.getElementById('btn-fill-current');
+        const saveBtn     = document.getElementById('btn-save');
+        const msgEl       = document.getElementById('coord-msg');
+
+        const inLatHP = document.getElementById('in-lat-hp');
+        const inLngHP = document.getElementById('in-lng-hp');
+        const inLatHN = document.getElementById('in-lat-hn');
+        const inLngHN = document.getElementById('in-lng-hn');
+
+        function openPanel() {
+            fillCurrent();
+            msgEl.innerText = '';
+            msgEl.className = 'coord-msg';
+            overlay.classList.add('open');
+        }
+        function closePanel() { overlay.classList.remove('open'); }
+        function fillCurrent() {
+            inLatHP.value = locationHP[0];
+            inLngHP.value = locationHP[1];
+            inLatHN.value = locationHN[0];
+            inLngHN.value = locationHN[1];
+        }
+
+        trigger.addEventListener('click', openPanel);
+        closeBtn.addEventListener('click', closePanel);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) closePanel(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+
+        fillBtn.addEventListener('click', () => {
+            fillCurrent();
+            msgEl.innerText = 'Đã điền tọa độ hiện tại.';
+            msgEl.className = 'coord-msg ok';
+        });
+
+        function isValidCoord(latStr, lngStr) {
+            const lat = parseFloat(String(latStr).replace(',', '.'));
+            const lng = parseFloat(String(lngStr).replace(',', '.'));
+            if (isNaN(lat) || isNaN(lng)) return false;
+            return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+        }
+
+        saveBtn.addEventListener('click', () => {
+            const latHP = inLatHP.value.trim();
+            const lngHP = inLngHP.value.trim();
+            const latHN = inLatHN.value.trim();
+            const lngHN = inLngHN.value.trim();
+
+            if (!isValidCoord(latHP, lngHP) || !isValidCoord(latHN, lngHN)) {
+                msgEl.innerText = 'Tọa độ không hợp lệ. Vui lòng kiểm tra lại.';
+                msgEl.className = 'coord-msg err';
+                return;
+            }
+
+            const url = GAS_URL +
+                '?lat_hp=' + encodeURIComponent(latHP) +
+                '&lng_hp=' + encodeURIComponent(lngHP) +
+                '&lat_hn=' + encodeURIComponent(latHN) +
+                '&lng_hn=' + encodeURIComponent(lngHN) +
+                '&_t=' + Date.now();
+
+            msgEl.innerText = 'Đang gửi lên Sheet...';
+            msgEl.className = 'coord-msg';
+            saveBtn.disabled = true;
+
+            fetch(url, { cache: "no-store" })
+                .then(r => r.json())
+                .then(data => {
+                    locationHP = parseCoord(data.lat_hp, data.lng_hp, DEFAULT_HP);
+                    locationHN = parseCoord(data.lat_hn, data.lng_hn, DEFAULT_HN);
+                    msgEl.innerText = '✅ Đã lưu tọa độ mới lên Google Sheet!';
+                    msgEl.className = 'coord-msg ok';
+                    fetchSheetData();
+                    setTimeout(closePanel, 1200);
+                })
+                .catch(err => {
+                    console.error(err);
+                    msgEl.innerText = '❌ Gửi thất bại. Kiểm tra kết nối hoặc quyền deploy Apps Script.';
+                    msgEl.className = 'coord-msg err';
+                })
+                .finally(() => { saveBtn.disabled = false; });
+        });
     </script>
 </body>
 </html>
