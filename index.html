@@ -958,11 +958,17 @@
         });
 
         /* ==========================================
-           LẤY GPS VỊ TRÍ HIỆN TẠI CỦA ĐIỆN THOẠI
+           LẤY GPS VỊ TRÍ HIỆN TẠI (BẢN TỐI ƯU)
            ========================================== */
         const btnMyLocation = document.getElementById('btn-my-location');
 
         btnMyLocation.addEventListener('click', () => {
+            // Kiểm tra bảo mật HTTPS
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                alert("⚠️ LỖI BẢO MẬT:\nTrình duyệt yêu cầu trang web phải chạy trên HTTPS mới cho phép lấy GPS.\n\nBạn hãy đưa code lên Github Pages, Vercel hoặc Netlify để chạy thử nhé!");
+                return;
+            }
+
             if (!navigator.geolocation) {
                 alert("Trình duyệt của bạn không hỗ trợ lấy vị trí GPS.");
                 return;
@@ -981,6 +987,7 @@
                     routeA = L.latLng(lat, lng);
                     markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
                     
+                    // Bay tới vị trí hiện tại
                     map.flyTo(routeA, 15);
 
                     hintEl.classList.remove('hidden');
@@ -991,19 +998,19 @@
                     btnMyLocation.innerHTML = '📍 Vị trí của tôi';
                 },
                 (error) => {
-                    let msg = "Lỗi không lấy được vị trí.";
-                    if (error.code === 1) msg = "Bạn đã từ chối cấp quyền vị trí. Hãy bật lại trong cài đặt trình duyệt.";
-                    else if (error.code === 2) msg = "Không xác định được vị trí (Sóng GPS yếu).";
-                    else if (error.code === 3) msg = "Quá thời gian lấy vị trí.";
+                    let msg = "Không lấy được vị trí.";
+                    if (error.code === 1) msg = "Bạn đã từ chối cấp quyền vị trí. Hãy vào Cài đặt trình duyệt (biểu tượng ổ khóa) để cấp lại quyền.";
+                    else if (error.code === 2) msg = "Không xác định được vị trí. Hãy bật Định vị (GPS) trên điện thoại.";
+                    else if (error.code === 3) msg = "Quá thời gian lấy vị trí. Sóng yếu, vui lòng thử lại.";
                     
-                    alert(msg);
+                    alert("⚠️ " + msg);
                     btnMyLocation.classList.remove('loading');
                     btnMyLocation.innerHTML = '📍 Vị trí của tôi';
                 },
                 {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
+                    enableHighAccuracy: false, // Tắt ưu tiên GPS vệ tinh -> lấy qua Wifi/4G nhanh hơn
+                    timeout: 8000,             // Chỉ chờ tối đa 8 giây
+                    maximumAge: 60000          // Chấp nhận vị trí lấy trong vòng 1 phút trước (nếu có)
                 }
             );
         });
