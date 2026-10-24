@@ -956,16 +956,26 @@
                 clearBtn.style.display = 'block';
             }
         });
-
         /* ==========================================
-           LẤY GPS VỊ TRÍ HIỆN TẠI (BẢN TỐI ƯU)
+           THEO DÕI GPS LIÊN TỤC (REAL-TIME TRACKING)
            ========================================== */
         const btnMyLocation = document.getElementById('btn-my-location');
+        
+        let watchId = null;          // ID của tiến trình theo dõi
+        let isTracking = false;      // Trạng thái đang bật/tắt
+        let lastUpdateTime = 0;      // Thời gian cập nhật cuối
+        let lastRouteALatLng = null; // Lưu vị trí A cũ để so sánh
 
         btnMyLocation.addEventListener('click', () => {
+            // Nếu đang theo dõi -> Bấm lần nữa là TẮT
+            if (isTracking) {
+                stopTracking();
+                return;
+            }
+
             // Kiểm tra bảo mật HTTPS
             if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                alert("⚠️ LỖI BẢO MẬT:\nTrình duyệt yêu cầu trang web phải chạy trên HTTPS mới cho phép lấy GPS.\n\nBạn hãy đưa code lên Github Pages, Vercel hoặc Netlify để chạy thử nhé!");
+                alert("⚠️ LỖI BẢO MẬT:\nTrình duyệt yêu cầu trang web phải chạy trên HTTPS mới cho phép lấy GPS.\n\nHãy đưa code lên Github Pages, Vercel hoặc Netlify để chạy thử nhé!");
                 return;
             }
 
@@ -974,47 +984,80 @@
                 return;
             }
 
-            btnMyLocation.classList.add('loading');
-            btnMyLocation.innerHTML = '⏳ Đang lấy...';
+            startTracking();
+        });
 
-            navigator.geolocation.getCurrentPosition(
+        function startTracking() {
+            isTracking = true;
+            btnMyLocation.classList.add('loading');
+            btnMyLocation.innerHTML = '🛑 Dừng theo dõi';
+            btnMyLocation.style.borderColor = '#e74c3c';
+            btnMyLocation.style.color = '#e74c3c';
+
+            // Bắt đầu theo dõi vị trí liên tục
+            watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
+                    const currentLatLng = L.latLng(lat, lng);
 
-                    resetRouting();
+                    // Nếu là lần đầu tiên lấy được vị trí
+                    if (!routeA) {
+                        resetRouting();
+                        routeA = currentLatLng;
+                        markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
+                        map.flyTo(routeA, 15);
+                        lastRouteALatLng = currentLatLng;
+                        
+                        hintEl.classList.remove('hidden');
+                        hintText.innerText = 'Đang theo dõi vị trí... Nhấn chọn điểm B';
+                        clearBtn.style.display = 'block';
+                        return;
+                    }
 
-                    routeA = L.latLng(lat, lng);
-                    markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
-                    
-                    // Bay tới vị trí hiện tại
-                    map.flyTo(routeA, 15);
+                    // Tính khoảng cách từ vị trí cũ đến vị trí mới (đơn vị: mét)
+                    const distanceMoved = routeA.distanceTo(currentLatLng);
 
-                    hintEl.classList.remove('hidden');
-                    hintText.innerText = 'Đã lấy vị trí! Nhấn chọn điểm B trên bản đồ';
-                    clearBtn.style.display = 'block';
-
-                    btnMyLocation.classList.remove('loading');
-                    btnMyLocation.innerHTML = '📍 Vị trí của tôi';
+                    // Chỉ cập nhật nếu đã di chuyển > 10 mét (tránh giật bản đồ)
+                    if (distanceMoved > 10) {
+                        routeA = currentLatLng;
+                        
+                        // Cập nhật lại Marker A
+                        if (markerA) markerA.setLatLng(routeA);
+                        
+                        // Nếu đã có điểm B, tự động vẽ lại đường đi mới
+                        if (routeB) {
+                            buildRoute();
+                        }
+                    }
                 },
                 (error) => {
-                    let msg = "Không lấy được vị trí.";
-                    if (error.code === 1) msg = "Bạn đã từ chối cấp quyền vị trí. Hãy vào Cài đặt trình duyệt (biểu tượng ổ khóa) để cấp lại quyền.";
-                    else if (error.code === 2) msg = "Không xác định được vị trí. Hãy bật Định vị (GPS) trên điện thoại.";
-                    else if (error.code === 3) msg = "Quá thời gian lấy vị trí. Sóng yếu, vui lòng thử lại.";
-                    
-                    alert("⚠️ " + msg);
-                    btnMyLocation.classList.remove('loading');
-                    btnMyLocation.innerHTML = '📍 Vị trí của tôi';
+                    console.warn("Lỗi GPS: ", error);
+                    // Chỉ báo lỗi nếu là lỗi từ chối cấp quyền
+                    if (error.code === 1) {
+                        alert("Bạn đã từ chối cấp quyền vị trí. Hãy bật lại trong cài đặt trình duyệt.");
+                        stopTracking();
+                    }
                 },
                 {
-                    enableHighAccuracy: false, // Tắt ưu tiên GPS vệ tinh -> lấy qua Wifi/4G nhanh hơn
-                    timeout: 8000,             // Chỉ chờ tối đa 8 giây
-                    maximumAge: 60000          // Chấp nhận vị trí lấy trong vòng 1 phút trước (nếu có)
+                    enableHighAccuracy: true,  // Bật GPS độ chính xác cao khi di chuyển
+                    timeout: 10000,
+                    maximumAge: 0
                 }
             );
-        });
+        }
 
+        function stopTracking() {
+            if (watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            isTracking = false;
+            btnMyLocation.classList.remove('loading');
+            btnMyLocation.innerHTML = '📍 Vị trí của tôi';
+            btnMyLocation.style.borderColor = 'var(--border-strong)';
+            btnMyLocation.style.color = 'var(--text-primary)';
+        }
         /* ==========================================
            PANEL CẬP NHẬT TỌA ĐỘ (SECRET)
            ========================================== */
