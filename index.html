@@ -678,7 +678,7 @@
         <div class="coord-panel">
             <button class="coord-close" id="coord-close" title="Đóng">✕</button>
             <h3>⚙️ Cập nhật tọa độ trạm</h3>
-            <p class="coord-sub">Ghi trực tiếp vào Google Sheet qua Apps Script. Dashboard sẽ tự đồng bộ ở lần fetch kế tiếp (≤ 5 giây).</p>
+            <p class="coord-sub">Ghi trực tiếp vào Google Sheet qua Apps Script. Dashboard sẽ tự đồng bộ ở lần fetch kế tiếp.</p>
 
             <div class="coord-group">
                 <div class="coord-group-title">📍 Trạm Hải Phòng (A9 / B9)</div>
@@ -828,6 +828,7 @@
         /* ==========================================
            MAP & DATA
            ========================================== */
+        const FIREBASE_URL = "https://nindz-d87fd-default-rtdb.firebaseio.com/water_level.json";
         const GAS_URL = "https://script.google.com/macros/s/AKfycbynga20oUtnQcFMjlWy3hpzASVgBeDcqPNFaoW0chhNjAsICWO0xdKsbzJwhPvdxHRL/exec";
 
         const DEFAULT_HP = [20.823905, 106.556187];
@@ -856,7 +857,7 @@
 
         let markerHP = null;
         let markerHN = null;
-        const prevValues = { temp: null, humid: null, tempHN: null, humidHN: null };
+        const prevValues = { temp: null, humid: null, tempHN: null, humidHN: null, waterHP: null };
 
         function popElement(el) {
             el.classList.remove('value-pop');
@@ -872,6 +873,9 @@
             return [lat, lng];
         }
 
+        // ==========================================
+        // CẬP NHẬT LOGIC MÀU SẮC TẠI ĐÂY
+        // ==========================================
         function renderStation({ location, waterLevel, tagId, timeId, stationTime, currentMarker, stationName, coordTextId }) {
             const level = Number(waterLevel);
             const statusTag = document.getElementById(tagId);
@@ -879,13 +883,21 @@
             const coordTag = coordTextId ? document.getElementById(coordTextId) : null;
 
             let colorClass, statusText, tagColor, isAlert = false;
-            if (level < 10) {
-                colorClass = "sensor-green"; statusText = `Ngập ${level}cm - An toàn`; tagColor = "#1db954";
-            } else if (level >= 10 && level < 20) {
+            
+            // LOGIC PHÂN LOẠI MỚI
+            if (level <= 5) {
+                colorClass = "sensor-green"; statusText = `Ngập ${level}cm - Bình thường`; tagColor = "#1db954";
+            } else if (level > 5 && level <= 10) {
                 colorClass = "sensor-orange"; statusText = `Ngập ${level}cm - Cảnh báo`; tagColor = "#f39c12"; isAlert = true;
             } else {
-                colorClass = "sensor-red"; statusText = `Ngập ${level}cm - Nguy hiểm`; tagColor = "#e74c3c"; isAlert = true;
+                colorClass = "sensor-red"; statusText = `Ngập ${level}cm - Ngập nặng`; tagColor = "#e74c3c"; isAlert = true;
             }
+
+            // Hiệu ứng nhảy số cho mực nước
+            if (prevValues.waterHP !== null && prevValues.waterHP !== level) {
+                popElement(statusTag);
+            }
+            prevValues.waterHP = level;
 
             if (statusTag) {
                 statusTag.innerText = statusText;
@@ -913,94 +925,96 @@
             return newMarker;
         }
 
-        function fetchSheetData() {
-            fetch(GAS_URL, { cache: "no-store" })
-                .then(response => response.json())
-                .then(data => {
-                    locationHP = parseCoord(data.lat_hp, data.lng_hp, DEFAULT_HP);
-                    const levelHP = data.vacant !== undefined ? data.vacant : 0;
-                    const timeHP = (data.time && data.date) ? `${data.time} (${data.date})` : (data.time || '--');
+        // Hàm cập nhật dữ liệu chính
+        async function updateDashboard() {
+            try {
+                // 1. LẤY DỮ LIỆU MỰC NƯỚC TỪ FIREBASE
+                const firebaseRes = await fetch(FIREBASE_URL, { cache: "no-store" });
+                const waterLevelHP = await firebaseRes.json();
 
-                    const tempVal = (data.vacant2 !== undefined && data.vacant2 !== '') ? Number(data.vacant2) : null;
-                    const humidVal = (data.vacant3 !== undefined && data.vacant3 !== '') ? Number(data.vacant3) : null;
+                // 2. LẤY DỮ LIỆU TỌA ĐỘ TỪ GOOGLE SHEET
+                const gasRes = await fetch(GAS_URL, { cache: "no-store" });
+                const data = await gasRes.json();
 
-                    const lvl = Number(levelHP);
-                    if (lvl < 10) hpStatus = 'green';
-                    else if (lvl < 20) hpStatus = 'orange';
-                    else hpStatus = 'red';
+                // Xử lý tọa độ
+                locationHP = parseCoord(data.lat_hp, data.lng_hp, DEFAULT_HP);
+                locationHN = parseCoord(data.lat_hn, data.lng_hn, DEFAULT_HN);
 
-                    const tempEl = document.getElementById("temp-hp");
-                    const humidEl = document.getElementById("humid-hp");
-                    const tempBar = document.getElementById("temp-bar");
-                    const humidBar = document.getElementById("humid-bar");
+                // Xử lý thời gian
+                const timeHP = (data.time && data.date) ? `${data.time} (${data.date})` : new Date().toLocaleTimeString('vi-VN');
 
-                    if (tempVal !== null && !isNaN(tempVal)) {
-                        tempEl.innerText = `${tempVal}°C`;
-                        tempBar.style.width = Math.min(Math.max(tempVal, 0), 100) + '%';
-                        if (prevValues.temp !== null && prevValues.temp !== tempVal) popElement(tempEl);
-                        prevValues.temp = tempVal;
-                    } else {
-                        tempEl.innerText = '--'; tempBar.style.width = '0%';
-                    }
+                // LOGIC PHÂN LOẠI MÀU MỚI CHO BẢN ĐỒ
+                const lvl = Number(waterLevelHP !== null ? waterLevelHP : 0);
+                if (lvl <= 5) hpStatus = 'green';
+                else if (lvl > 5 && lvl <= 10) hpStatus = 'orange';
+                else hpStatus = 'red';
 
-                    if (humidVal !== null && !isNaN(humidVal)) {
-                        humidEl.innerText = `${humidVal}%`;
-                        humidBar.style.width = Math.min(Math.max(humidVal, 0), 100) + '%';
-                        if (prevValues.humid !== null && prevValues.humid !== humidVal) popElement(humidEl);
-                        prevValues.humid = humidVal;
-                    } else {
-                        humidEl.innerText = '--'; humidBar.style.width = '0%';
-                    }
+                // 3. CẬP NHẬT NHIỆT ĐỘ / ĐỘ ẨM (Đang chờ dữ liệu)
+                const tempEl = document.getElementById("temp-hp");
+                const humidEl = document.getElementById("humid-hp");
+                const tempBar = document.getElementById("temp-bar");
+                const humidBar = document.getElementById("humid-bar");
 
-                    markerHP = renderStation({
-                        location: locationHP, waterLevel: levelHP,
-                        tagId: "status-tag-hp", timeId: "time-hp", stationTime: timeHP,
-                        currentMarker: markerHP, stationName: "TRẠM CẢM BIẾN HẢI PHÒNG",
-                        coordTextId: "coord-text-hp"
-                    });
+                tempEl.innerText = '--';
+                tempBar.style.width = '0%';
+                humidEl.innerText = '--';
+                humidBar.style.width = '0%';
 
-                    locationHN = parseCoord(data.lat_hn, data.lng_hn, DEFAULT_HN);
+                // 4. VẼ LẠI TRẠM HẢI PHÒNG
+                markerHP = renderStation({
+                    location: locationHP, 
+                    waterLevel: lvl,
+                    tagId: "status-tag-hp", 
+                    timeId: "time-hp", 
+                    stationTime: timeHP,
+                    currentMarker: markerHP, 
+                    stationName: "TRẠM CẢM BIẾN HẢI PHÒNG",
+                    coordTextId: "coord-text-hp"
+                });
 
-                    const tempElHN = document.getElementById("temp-hn");
-                    const humidElHN = document.getElementById("humid-hn");
-                    const tempBarHN = document.getElementById("temp-bar-hn");
-                    const humidBarHN = document.getElementById("humid-bar-hn");
+                // 5. VẼ LẠI TRẠM HÀ NỘI
+                const tempElHN = document.getElementById("temp-hn");
+                const humidElHN = document.getElementById("humid-hn");
+                const tempBarHN = document.getElementById("temp-bar-hn");
+                const humidBarHN = document.getElementById("humid-bar-hn");
 
-                    tempElHN.innerText = `${DEFAULT_HN_TEMP}°C`;
-                    tempBarHN.style.width = `${DEFAULT_HN_TEMP}%`;
+                tempElHN.innerText = `${DEFAULT_HN_TEMP}°C`;
+                tempBarHN.style.width = `${DEFAULT_HN_TEMP}%`;
+                humidElHN.innerText = `${DEFAULT_HN_HUMID}%`;
+                humidBarHN.style.width = `${DEFAULT_HN_HUMID}%`;
 
-                    humidElHN.innerText = `${DEFAULT_HN_HUMID}%`;
-                    humidBarHN.style.width = `${DEFAULT_HN_HUMID}%`;
+                if (prevValues.tempHN !== DEFAULT_HN_TEMP) {
+                    popElement(tempElHN);
+                    prevValues.tempHN = DEFAULT_HN_TEMP;
+                }
+                if (prevValues.humidHN !== DEFAULT_HN_HUMID) {
+                    popElement(humidElHN);
+                    prevValues.humidHN = DEFAULT_HN_HUMID;
+                }
 
-                    if (prevValues.tempHN !== DEFAULT_HN_TEMP) {
-                        popElement(tempElHN);
-                        prevValues.tempHN = DEFAULT_HN_TEMP;
-                    }
-                    if (prevValues.humidHN !== DEFAULT_HN_HUMID) {
-                        popElement(humidElHN);
-                        prevValues.humidHN = DEFAULT_HN_HUMID;
-                    }
+                markerHN = renderStation({
+                    location: locationHN,
+                    waterLevel: DEFAULT_HN_WATER,
+                    tagId: "status-tag-hn",
+                    timeId: "time-hn",
+                    stationTime: timeHP,
+                    currentMarker: markerHN,
+                    stationName: "TRẠM CẢM BIẾN HÀ NỘI",
+                    coordTextId: "coord-text-hn"
+                });
 
-                    markerHN = renderStation({
-                        location: locationHN,
-                        waterLevel: DEFAULT_HN_WATER,
-                        tagId: "status-tag-hn",
-                        timeId: "time-hn",
-                        stationTime: timeHP,
-                        currentMarker: markerHN,
-                        stationName: "TRẠM CẢM BIẾN HÀ NỘI",
-                        coordTextId: "coord-text-hn"
-                    });
+                // Cập nhật thời gian đồng bộ
+                const now = new Date();
+                document.getElementById("update-time").innerText =
+                    "Đồng bộ hệ thống lần cuối: " + now.toLocaleTimeString('vi-VN');
 
-                    const now = new Date();
-                    document.getElementById("update-time").innerText =
-                        "Đồng bộ hệ thống lần cuối: " + now.toLocaleTimeString('vi-VN');
-                })
-                .catch(error => console.error("Lỗi kết nối dữ liệu Sheet:", error));
+            } catch (error) {
+                console.error("Lỗi kết nối dữ liệu:", error);
+            }
         }
 
-        fetchSheetData();
-        setInterval(fetchSheetData, 5000);
+        updateDashboard();
+        setInterval(updateDashboard, 1000);
 
         /* ==========================================
            DẪN ĐƯỜNG
@@ -1117,6 +1131,7 @@
 
             if (dangerCircle) { map.removeLayer(dangerCircle); dangerCircle = null; }
 
+            // NẾU TRẠM AN TOÀN (<= 5cm) THÌ ĐI ĐƯỜNG BÌNH THƯỜNG
             if (hpStatus === 'green') {
                 if (myFetchId === currentFetchId) {
                     renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
@@ -1125,6 +1140,7 @@
                 return;
             }
 
+            // NẾU CÓ NGẬP (> 5cm) THÌ VẼ VÙNG ĐỎ VÀ TÌM ĐƯỜNG NÉ
             dangerCircle = L.circle(locationHP, {
                 radius: 100, color: '#e74c3c', fillColor: '#e74c3c', fillOpacity: 0.2, weight: 2, dashArray: '5,5'
             }).addTo(map);
@@ -1371,7 +1387,7 @@
                     locationHN = parseCoord(data.lat_hn, data.lng_hn, DEFAULT_HN);
                     msgEl.innerText = '✅ Đã lưu tọa độ mới lên Google Sheet!';
                     msgEl.className = 'coord-msg ok';
-                    fetchSheetData();
+                    updateDashboard(); 
                     setTimeout(closePanel, 1200);
                 })
                 .catch(err => {
