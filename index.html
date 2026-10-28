@@ -408,9 +408,6 @@
             body:not(.force-desktop) .sensor-extra-label { font-size: 10.5px; }
             body:not(.force-desktop) .sensor-extra-value { font-size: 19px; }
             body:not(.force-desktop) .sensor-extra-icon { font-size: 14px; }
-            body:not(.force-desktop) .station-footer { font-size: 12px; padding-top: 10px; }
-            body:not(.force-desktop) .station-footer strong { font-size: 12px; }
-
             body:not(.force-desktop) .swipe-indicator { display: flex; }
 
             body:not(.force-desktop) .footer-status-container { margin-top: 16px; gap: 6px; }
@@ -462,8 +459,6 @@
         body.force-mobile .sensor-extra-label { font-size: 10.5px; }
         body.force-mobile .sensor-extra-value { font-size: 19px; }
         body.force-mobile .sensor-extra-icon { font-size: 14px; }
-        body.force-mobile .station-footer { font-size: 12px; padding-top: 10px; }
-        body.force-mobile .station-footer strong { font-size: 12px; }
         body.force-mobile .swipe-indicator { display: flex; }
         body.force-mobile .footer-status-container { margin-top: 16px; gap: 6px; }
         body.force-mobile .system-status { padding: 8px 14px; font-size: 11px; }
@@ -544,11 +539,6 @@
                         <div class="mini-bar"><div class="mini-bar-fill humid" id="humid-bar"></div></div>
                     </div>
                 </div>
-
-                <div class="station-footer">
-                    <span>Thời gian ghi nhận:</span>
-                    <strong id="time-hp">--:--:--</strong>
-                </div>
             </div>
 
             <!-- TRẠM HÀ NỘI -->
@@ -578,11 +568,6 @@
                         <span class="sensor-extra-value" id="humid-hn">--</span>
                         <div class="mini-bar"><div class="mini-bar-fill humid" id="humid-bar-hn"></div></div>
                     </div>
-                </div>
-
-                <div class="station-footer">
-                    <span>Thời gian ghi nhận:</span>
-                    <strong id="time-hn">--:--:--</strong>
                 </div>
             </div>
         </div>
@@ -806,7 +791,6 @@
     function renderStation({ location, waterLevel, tagId, timeId, stationTime, currentMarker, stationName, coordTextId }) {
         const level = Number(waterLevel);
         const statusTag = document.getElementById(tagId);
-        const timeTag = document.getElementById(timeId);
         const coordTag = coordTextId ? document.getElementById(coordTextId) : null;
 
         let colorClass, statusText, tagColor, isAlert = false;
@@ -830,7 +814,6 @@
             statusTag.style.borderColor = tagColor + '55';
             statusTag.classList.toggle('alert', isAlert);
         }
-        if (timeTag && stationTime) timeTag.innerText = stationTime;
         if (coordTag) coordTag.innerText = `Tọa độ: ${location[0].toFixed(6)}, ${location[1].toFixed(6)}`;
 
         if (currentMarker) map.removeLayer(currentMarker);
