@@ -382,62 +382,25 @@
             body:not(.force-desktop) .map-card { padding: 8px; margin-bottom: 14px; border-radius: 16px; }
             body:not(.force-desktop) #map { height: 42vh; min-height: 240px; border-radius: 12px; }
 
-            /* Dời zoom control xuống dưới để nhường chỗ cho nút Vị trí */
-            body:not(.force-desktop) .leaflet-top.leaflet-left {
-                top: 64px !important;
-                left: 12px !important;
-            }
-            body:not(.force-desktop) .leaflet-control-zoom {
-                border-radius: 10px !important;
-                overflow: hidden;
-            }
+            body:not(.force-desktop) .leaflet-top.leaflet-left { top: 64px !important; left: 12px !important; }
+            body:not(.force-desktop) .leaflet-control-zoom { border-radius: 10px !important; overflow: hidden; }
 
-            /* FAB cho các nút trên bản đồ */
             body:not(.force-desktop) .routing-location-btn,
-            body:not(.force-desktop) .routing-clear-btn {
-                width: 44px; height: 44px; padding: 0; border-radius: 50%;
-                justify-content: center; font-size: 16px;
-                box-shadow: 0 6px 18px var(--shadow-color);
-            }
+            body:not(.force-desktop) .routing-clear-btn { width: 44px; height: 44px; padding: 0; border-radius: 50%; justify-content: center; font-size: 16px; box-shadow: 0 6px 18px var(--shadow-color); }
             body:not(.force-desktop) .routing-location-btn .btn-label,
             body:not(.force-desktop) .routing-clear-btn .btn-label { display: none; }
             body:not(.force-desktop) #btn-my-location { top: 12px; left: 12px; }
             body:not(.force-desktop) #btn-toggle-directions { top: 12px; left: 66px; }
             body:not(.force-desktop) #routing-clear { bottom: 12px; right: 12px; }
 
-            body:not(.force-desktop) .routing-hint {
-                bottom: 12px; left: 12px; right: 66px;
-                font-size: 11px; padding: 8px 10px;
-                max-width: none;
-            }
+            body:not(.force-desktop) .routing-hint { bottom: 12px; left: 12px; right: 66px; font-size: 11px; padding: 8px 10px; max-width: none; }
             body:not(.force-desktop) .routing-hint .step-badge { font-size: 10px; padding: 2px 6px; }
 
-            body:not(.force-desktop) .leaflet-routing-container.show-panel {
-                top: auto; bottom: 10px; left: 10px; right: 10px;
-                width: auto; max-height: 45vh;
-            }
+            body:not(.force-desktop) .leaflet-routing-container.show-panel { top: auto; bottom: 10px; left: 10px; right: 10px; width: auto; max-height: 45vh; }
 
-            /* ====== STATIONS: SWIPE NGANG ====== */
-            body:not(.force-desktop) .stations-grid {
-                display: flex; flex-wrap: nowrap;
-                overflow-x: auto; overflow-y: hidden;
-                scroll-snap-type: x mandatory;
-                gap: 12px;
-                padding-bottom: 4px;
-                margin: 0 -12px;
-                padding-left: 12px; padding-right: 12px;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-                -webkit-overflow-scrolling: touch;
-            }
+            body:not(.force-desktop) .stations-grid { display: flex; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 4px; margin: 0 -12px; padding-left: 12px; padding-right: 12px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }
             body:not(.force-desktop) .stations-grid::-webkit-scrollbar { display: none; }
-            body:not(.force-desktop) .station-card {
-                flex: 0 0 calc(100% - 4px);
-                scroll-snap-align: center;
-                padding: 16px 16px;
-                border-radius: 16px;
-                gap: 12px;
-            }
+            body:not(.force-desktop) .station-card { flex: 0 0 calc(100% - 4px); scroll-snap-align: center; padding: 16px 16px; border-radius: 16px; gap: 12px; }
             body:not(.force-desktop) .location-info h2 { font-size: 15px; }
             body:not(.force-desktop) .location-info p { font-size: 11.5px; }
             body:not(.force-desktop) .status-badge { padding: 6px 10px; font-size: 11px; }
@@ -454,15 +417,8 @@
             body:not(.force-desktop) .system-status { padding: 8px 14px; font-size: 11px; }
             body:not(.force-desktop) .footer-update { font-size: 11px; text-align: center; }
 
-            /* Coord panel -> bottom sheet */
             body:not(.force-desktop) .coord-overlay { align-items: flex-end; padding: 0; }
-            body:not(.force-desktop) .coord-panel {
-                max-width: 100%;
-                border-radius: 20px 20px 0 0;
-                transform: translateY(100%);
-                max-height: 85vh;
-                padding-bottom: calc(18px + env(safe-area-inset-bottom));
-            }
+            body:not(.force-desktop) .coord-panel { max-width: 100%; border-radius: 20px 20px 0 0; transform: translateY(100%); max-height: 85vh; padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
             body:not(.force-desktop) .coord-overlay.open .coord-panel { transform: translateY(0); }
         }
 
@@ -483,21 +439,11 @@
         body.force-mobile .map-card { padding: 8px; margin-bottom: 14px; border-radius: 16px; }
         body.force-mobile #map { height: 42vh; min-height: 240px; border-radius: 12px; }
 
-        /* Dời zoom control xuống dưới để nhường chỗ cho nút Vị trí */
-        body.force-mobile .leaflet-top.leaflet-left {
-            top: 64px !important;
-            left: 12px !important;
-        }
-        body.force-mobile .leaflet-control-zoom {
-            border-radius: 10px !important;
-            overflow: hidden;
-        }
+        body.force-mobile .leaflet-top.leaflet-left { top: 64px !important; left: 12px !important; }
+        body.force-mobile .leaflet-control-zoom { border-radius: 10px !important; overflow: hidden; }
 
         body.force-mobile .routing-location-btn,
-        body.force-mobile .routing-clear-btn {
-            width: 44px; height: 44px; padding: 0; border-radius: 50%;
-            justify-content: center; font-size: 16px;
-        }
+        body.force-mobile .routing-clear-btn { width: 44px; height: 44px; padding: 0; border-radius: 50%; justify-content: center; font-size: 16px; }
         body.force-mobile .routing-location-btn .btn-label,
         body.force-mobile .routing-clear-btn .btn-label { display: none; }
         body.force-mobile #btn-my-location { top: 12px; left: 12px; }
@@ -506,21 +452,9 @@
         body.force-mobile .routing-hint { bottom: 12px; left: 12px; right: 66px; font-size: 11px; padding: 8px 10px; max-width: none; }
         body.force-mobile .routing-hint .step-badge { font-size: 10px; padding: 2px 6px; }
         body.force-mobile .leaflet-routing-container.show-panel { top: auto; bottom: 10px; left: 10px; right: 10px; width: auto; max-height: 45vh; }
-        body.force-mobile .stations-grid {
-            display: flex; flex-wrap: nowrap;
-            overflow-x: auto; overflow-y: hidden;
-            scroll-snap-type: x mandatory;
-            gap: 12px; padding-bottom: 4px;
-            margin: 0 -12px; padding-left: 12px; padding-right: 12px;
-            scrollbar-width: none; -ms-overflow-style: none;
-            -webkit-overflow-scrolling: touch;
-        }
+        body.force-mobile .stations-grid { display: flex; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 4px; margin: 0 -12px; padding-left: 12px; padding-right: 12px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }
         body.force-mobile .stations-grid::-webkit-scrollbar { display: none; }
-        body.force-mobile .station-card {
-            flex: 0 0 calc(100% - 4px);
-            scroll-snap-align: center;
-            padding: 16px; border-radius: 16px; gap: 12px;
-        }
+        body.force-mobile .station-card { flex: 0 0 calc(100% - 4px); scroll-snap-align: center; padding: 16px; border-radius: 16px; gap: 12px; }
         body.force-mobile .location-info h2 { font-size: 15px; }
         body.force-mobile .location-info p { font-size: 11.5px; }
         body.force-mobile .status-badge { padding: 6px 10px; font-size: 11px; }
@@ -535,13 +469,7 @@
         body.force-mobile .system-status { padding: 8px 14px; font-size: 11px; }
         body.force-mobile .footer-update { font-size: 11px; text-align: center; }
         body.force-mobile .coord-overlay { align-items: flex-end; padding: 0; }
-        body.force-mobile .coord-panel {
-            max-width: 100%;
-            border-radius: 20px 20px 0 0;
-            transform: translateY(100%);
-            max-height: 85vh;
-            padding-bottom: calc(18px + env(safe-area-inset-bottom));
-        }
+        body.force-mobile .coord-panel { max-width: 100%; border-radius: 20px 20px 0 0; transform: translateY(100%); max-height: 85vh; padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
         body.force-mobile .coord-overlay.open .coord-panel { transform: translateY(0); }
     </style>
 </head>
@@ -719,684 +647,701 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
-    <script>
-        /* ==========================================
-           VIEW MODE TOGGLE (Mobile / Desktop / Auto)
-           ========================================== */
-        const VIEW_KEY = 'viewMode';
-        let currentViewMode = localStorage.getItem(VIEW_KEY) || 'auto';
+<script>
+    /* ==========================================
+       VIEW MODE TOGGLE (Mobile / Desktop / Auto)
+       ========================================== */
+    const VIEW_KEY = 'viewMode';
+    let currentViewMode = localStorage.getItem(VIEW_KEY) || 'auto';
 
-        function applyViewMode() {
-            document.body.classList.remove('force-mobile', 'force-desktop');
-            const icon = document.getElementById('view-icon');
-            const text = document.getElementById('view-text');
-            const btn = document.getElementById('view-btn');
-            btn.classList.remove('active');
+    function applyViewMode() {
+        document.body.classList.remove('force-mobile', 'force-desktop');
+        const icon = document.getElementById('view-icon');
+        const text = document.getElementById('view-text');
+        const btn = document.getElementById('view-btn');
+        btn.classList.remove('active');
 
-            if (currentViewMode === 'mobile') {
-                document.body.classList.add('force-mobile');
-                icon.innerText = '📱';
-                text.innerText = 'Điện thoại';
-                btn.classList.add('active');
-            } else if (currentViewMode === 'desktop') {
-                document.body.classList.add('force-desktop');
-                icon.innerText = '💻';
-                text.innerText = 'Máy tính';
-                btn.classList.add('active');
-            } else {
-                icon.innerText = '🔄';
-                text.innerText = 'Tự động';
-            }
-
-            const btnLoc = document.getElementById('btn-my-location');
-            if (btnLoc && !btnLoc.classList.contains('loading')) {
-                btnLoc.innerHTML = '<span>📍</span><span class="btn-label">Vị trí</span>';
-            }
-
-            setTimeout(() => { if (window.map && map.invalidateSize) map.invalidateSize(); }, 250);
+        if (currentViewMode === 'mobile') {
+            document.body.classList.add('force-mobile');
+            icon.innerText = '📱';
+            text.innerText = 'Điện thoại';
+            btn.classList.add('active');
+        } else if (currentViewMode === 'desktop') {
+            document.body.classList.add('force-desktop');
+            icon.innerText = '💻';
+            text.innerText = 'Máy tính';
+            btn.classList.add('active');
+        } else {
+            icon.innerText = '🔄';
+            text.innerText = 'Tự động';
         }
 
-        function toggleViewMode() {
-            if (currentViewMode === 'auto') currentViewMode = 'mobile';
-            else if (currentViewMode === 'mobile') currentViewMode = 'desktop';
-            else currentViewMode = 'auto';
-            localStorage.setItem(VIEW_KEY, currentViewMode);
-            applyViewMode();
+        const btnLoc = document.getElementById('btn-my-location');
+        if (btnLoc && !btnLoc.classList.contains('loading')) {
+            btnLoc.innerHTML = '<span>📍</span><span class="btn-label">Vị trí</span>';
         }
 
+        setTimeout(() => { if (window.map && map.invalidateSize) map.invalidateSize(); }, 250);
+    }
+
+    function toggleViewMode() {
+        if (currentViewMode === 'auto') currentViewMode = 'mobile';
+        else if (currentViewMode === 'mobile') currentViewMode = 'desktop';
+        else currentViewMode = 'auto';
+        localStorage.setItem(VIEW_KEY, currentViewMode);
         applyViewMode();
-        window.addEventListener('resize', () => {
-            if (currentViewMode === 'auto' && window.map && map.invalidateSize) {
-                setTimeout(() => map.invalidateSize(), 200);
-            }
+    }
+
+    applyViewMode();
+    window.addEventListener('resize', () => {
+        if (currentViewMode === 'auto' && window.map && map.invalidateSize) {
+            setTimeout(() => map.invalidateSize(), 200);
+        }
+    });
+
+    /* ==========================================
+       SWIPE INDICATOR
+       ========================================== */
+    (function setupSwipeIndicator() {
+        const grid = document.getElementById('stations-grid');
+        const dots = document.querySelectorAll('.swipe-dot');
+        if (!grid || dots.length === 0) return;
+        grid.addEventListener('scroll', () => {
+            const cardWidth = grid.querySelector('.station-card')?.offsetWidth || 1;
+            const idx = Math.round(grid.scrollLeft / (cardWidth + 12));
+            dots.forEach((d, i) => d.classList.toggle('active', i === Math.min(idx, dots.length - 1)));
+        }, { passive: true });
+    })();
+
+    /* ==========================================
+       CẤU HÌNH THÔNG SỐ MẶC ĐỊNH CHO TRẠM HÀ NỘI
+       ========================================== */
+    const DEFAULT_HN_WATER = 2;
+    const DEFAULT_HN_TEMP = 28;
+    const DEFAULT_HN_HUMID = 75;
+
+    /* ==========================================
+       THEME
+       ========================================== */
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeIcon.innerText = '☀️';
+            themeText.innerText = 'Giao diện Sáng';
+        } else {
+            document.body.classList.remove('light-mode');
+            themeIcon.innerText = '🌙';
+            themeText.innerText = 'Giao diện Tối';
+        }
+    }
+    function toggleTheme() {
+        const isLight = document.body.classList.toggle('light-mode');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+        if (isLight) {
+            localStorage.setItem('theme', 'light');
+            themeIcon.innerText = '☀️';
+            themeText.innerText = 'Giao diện Sáng';
+        } else {
+            localStorage.setItem('theme', 'dark');
+            themeIcon.innerText = '🌙';
+            themeText.innerText = 'Giao diện Tối';
+        }
+    }
+    initTheme();
+
+    /* ==========================================
+       MAP & DATA
+       ========================================== */
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbynga20oUtnQcFMjlWy3hpzASVgBeDcqPNFaoW0chhNjAsICWO0xdKsbzJwhPvdxHRL/exec";
+
+    // ===== FIREBASE BASE URL =====
+    const FB_BASE = "https://nindz-d87fd-default-rtdb.firebaseio.com";
+
+    const DEFAULT_HP = [20.823905, 106.556187];
+    const DEFAULT_HN = [21.028511, 105.854167];
+
+    let locationHP = DEFAULT_HP.slice();
+    let locationHN = DEFAULT_HN.slice();
+    let hpStatus = 'green';
+
+    const googleStreet = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3']
+    });
+    const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+        maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3']
+    });
+
+    const map = L.map('map', {
+        center: [20.92, 106.20], zoom: 12, layers: [googleStreet], zoomControl: true
+    });
+    window.map = map;
+
+    L.control.layers({
+        "🗺️ Đường bộ": googleStreet,
+        "🛰️ Vệ tinh": googleSatellite
+    }, null, { position: 'topright' }).addTo(map);
+
+    let markerHP = null;
+    let markerHN = null;
+    const prevValues = { temp: null, humid: null, tempHN: null, humidHN: null, waterHP: null };
+
+    function popElement(el) {
+        el.classList.remove('value-pop');
+        void el.offsetWidth;
+        el.classList.add('value-pop');
+    }
+
+    function parseCoord(latStr, lngStr, fallback) {
+        const lat = parseFloat(String(latStr).replace(',', '.'));
+        const lng = parseFloat(String(lngStr).replace(',', '.'));
+        if (isNaN(lat) || isNaN(lng)) return fallback.slice();
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return fallback.slice();
+        return [lat, lng];
+    }
+
+    function renderStation({ location, waterLevel, tagId, timeId, stationTime, currentMarker, stationName, coordTextId }) {
+        const level = Number(waterLevel);
+        const statusTag = document.getElementById(tagId);
+        const timeTag = document.getElementById(timeId);
+        const coordTag = coordTextId ? document.getElementById(coordTextId) : null;
+
+        let colorClass, statusText, tagColor, isAlert = false;
+        
+        if (level <= 5) {
+            colorClass = "sensor-green"; statusText = `Ngập ${level}cm - Bình thường`; tagColor = "#1db954";
+        } else if (level > 5 && level <= 10) {
+            colorClass = "sensor-orange"; statusText = `Ngập ${level}cm - Cảnh báo`; tagColor = "#f39c12"; isAlert = true;
+        } else {
+            colorClass = "sensor-red"; statusText = `Ngập ${level}cm - Ngập nặng`; tagColor = "#e74c3c"; isAlert = true;
+        }
+
+        if (prevValues.waterHP !== null && prevValues.waterHP !== level) {
+            popElement(statusTag);
+        }
+        prevValues.waterHP = level;
+
+        if (statusTag) {
+            statusTag.innerText = statusText;
+            statusTag.style.color = tagColor;
+            statusTag.style.borderColor = tagColor + '55';
+            statusTag.classList.toggle('alert', isAlert);
+        }
+        if (timeTag && stationTime) timeTag.innerText = stationTime;
+        if (coordTag) coordTag.innerText = `Tọa độ: ${location[0].toFixed(6)}, ${location[1].toFixed(6)}`;
+
+        if (currentMarker) map.removeLayer(currentMarker);
+
+        const customIcon = L.divIcon({
+            className: '',
+            html: `<div class="sensor-container ${colorClass}"><div class="sensor-core"></div></div>`,
+            iconSize: [18, 18], iconAnchor: [9, 9]
         });
 
-        /* ==========================================
-           SWIPE INDICATOR
-           ========================================== */
-        (function setupSwipeIndicator() {
-            const grid = document.getElementById('stations-grid');
-            const dots = document.querySelectorAll('.swipe-dot');
-            if (!grid || dots.length === 0) return;
-            grid.addEventListener('scroll', () => {
-                const cardWidth = grid.querySelector('.station-card')?.offsetWidth || 1;
-                const idx = Math.round(grid.scrollLeft / (cardWidth + 12));
-                dots.forEach((d, i) => d.classList.toggle('active', i === Math.min(idx, dots.length - 1)));
-            }, { passive: true });
-        })();
+        const newMarker = L.marker(location, { icon: customIcon }).addTo(map);
+        newMarker.bindPopup(
+            `<b>${stationName}</b><br>Trạng thái: <b>${statusText}</b><br>` +
+            `<small>Tọa độ: ${location[0].toFixed(6)}, ${location[1].toFixed(6)}</small><br>` +
+            `<small>Ghi nhận: ${stationTime || '--'}</small>`
+        );
+        return newMarker;
+    }
 
-        /* ==========================================
-           CẤU HÌNH THÔNG SỐ MẶC ĐỊNH CHO TRẠM HÀ NỘI
-           ========================================== */
-        const DEFAULT_HN_WATER = 2;
-        const DEFAULT_HN_TEMP = 28;
-        const DEFAULT_HN_HUMID = 75;
+    // ================= CẬP NHẬT DASHBOARD VỚI FIREBASE =================
+    async function updateDashboard() {
+        try {
+            // 1. LẤY TOÀN BỘ DỮ LIỆU TỪ FIREBASE (mực nước + nhiệt độ + độ ẩm)
+            const [resWater, resTemp, resHumid] = await Promise.all([
+                fetch(`${FB_BASE}/water_level.json`, { cache: "no-store" }),
+                fetch(`${FB_BASE}/temperature.json`, { cache: "no-store" }),
+                fetch(`${FB_BASE}/humidity.json`, { cache: "no-store" })
+            ]);
 
-        /* ==========================================
-           THEME
-           ========================================== */
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const themeIcon = document.getElementById('theme-icon');
-            const themeText = document.getElementById('theme-text');
-            if (savedTheme === 'light') {
-                document.body.classList.add('light-mode');
-                themeIcon.innerText = '☀️';
-                themeText.innerText = 'Giao diện Sáng';
+            const waterLevelHP = await resWater.json();
+            const tempHP = await resTemp.json();
+            const humidHP = await resHumid.json();
+
+            // 2. LẤY DỮ LIỆU TỌA ĐỘ TỪ GOOGLE SHEET
+            const gasRes = await fetch(GAS_URL, { cache: "no-store" });
+            const data = await gasRes.json();
+
+            // Xử lý tọa độ
+            locationHP = parseCoord(data.lat_hp, data.lng_hp, DEFAULT_HP);
+            locationHN = parseCoord(data.lat_hn, data.lng_hn, DEFAULT_HN);
+
+            // Xử lý thời gian
+            const timeHP = (data.time && data.date) ? `${data.time} (${data.date})` : new Date().toLocaleTimeString('vi-VN');
+
+            // Xử lý trạng thái màu cho bản đồ
+            const lvl = Number(waterLevelHP !== null ? waterLevelHP : 0);
+            if (lvl <= 5) hpStatus = 'green';
+            else if (lvl > 5 && lvl <= 10) hpStatus = 'orange';
+            else hpStatus = 'red';
+
+            // 3. CẬP NHẬT NHIỆT ĐỘ / ĐỘ ẨM TỪ FIREBASE
+            const tempEl = document.getElementById("temp-hp");
+            const humidEl = document.getElementById("humid-hp");
+            const tempBar = document.getElementById("temp-bar");
+            const humidBar = document.getElementById("humid-bar");
+
+            if (tempHP !== null && tempHP !== undefined && !isNaN(tempHP)) {
+                tempEl.innerText = `${Math.round(tempHP)}°C`;
+                tempBar.style.width = Math.min(Math.max(tempHP, 0), 100) + '%';
+                if (prevValues.temp !== null && prevValues.temp !== tempHP) popElement(tempEl);
+                prevValues.temp = tempHP;
             } else {
-                document.body.classList.remove('light-mode');
-                themeIcon.innerText = '🌙';
-                themeText.innerText = 'Giao diện Tối';
+                tempEl.innerText = `--`;
+                tempBar.style.width = '0%';
             }
-        }
-        function toggleTheme() {
-            const isLight = document.body.classList.toggle('light-mode');
-            const themeIcon = document.getElementById('theme-icon');
-            const themeText = document.getElementById('theme-text');
-            if (isLight) {
-                localStorage.setItem('theme', 'light');
-                themeIcon.innerText = '☀️';
-                themeText.innerText = 'Giao diện Sáng';
+
+            if (humidHP !== null && humidHP !== undefined && !isNaN(humidHP)) {
+                humidEl.innerText = `${Math.round(humidHP)}%`;
+                humidBar.style.width = Math.min(Math.max(humidHP, 0), 100) + '%';
+                if (prevValues.humid !== null && prevValues.humid !== humidHP) popElement(humidEl);
+                prevValues.humid = humidHP;
             } else {
-                localStorage.setItem('theme', 'dark');
-                themeIcon.innerText = '🌙';
-                themeText.innerText = 'Giao diện Tối';
-            }
-        }
-        initTheme();
-
-        /* ==========================================
-           MAP & DATA
-           ========================================== */
-        const FIREBASE_URL = "https://nindz-d87fd-default-rtdb.firebaseio.com/water_level.json";
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbynga20oUtnQcFMjlWy3hpzASVgBeDcqPNFaoW0chhNjAsICWO0xdKsbzJwhPvdxHRL/exec";
-
-        const DEFAULT_HP = [20.823905, 106.556187];
-        const DEFAULT_HN = [21.028511, 105.854167];
-
-        let locationHP = DEFAULT_HP.slice();
-        let locationHN = DEFAULT_HN.slice();
-        let hpStatus = 'green';
-
-        const googleStreet = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3']
-        });
-        const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3']
-        });
-
-        const map = L.map('map', {
-            center: [20.92, 106.20], zoom: 12, layers: [googleStreet], zoomControl: true
-        });
-        window.map = map;
-
-        L.control.layers({
-            "🗺️ Đường bộ": googleStreet,
-            "🛰️ Vệ tinh": googleSatellite
-        }, null, { position: 'topright' }).addTo(map);
-
-        let markerHP = null;
-        let markerHN = null;
-        const prevValues = { temp: null, humid: null, tempHN: null, humidHN: null, waterHP: null };
-
-        function popElement(el) {
-            el.classList.remove('value-pop');
-            void el.offsetWidth;
-            el.classList.add('value-pop');
-        }
-
-        function parseCoord(latStr, lngStr, fallback) {
-            const lat = parseFloat(String(latStr).replace(',', '.'));
-            const lng = parseFloat(String(lngStr).replace(',', '.'));
-            if (isNaN(lat) || isNaN(lng)) return fallback.slice();
-            if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return fallback.slice();
-            return [lat, lng];
-        }
-
-        // ==========================================
-        // CẬP NHẬT LOGIC MÀU SẮC TẠI ĐÂY
-        // ==========================================
-        function renderStation({ location, waterLevel, tagId, timeId, stationTime, currentMarker, stationName, coordTextId }) {
-            const level = Number(waterLevel);
-            const statusTag = document.getElementById(tagId);
-            const timeTag = document.getElementById(timeId);
-            const coordTag = coordTextId ? document.getElementById(coordTextId) : null;
-
-            let colorClass, statusText, tagColor, isAlert = false;
-            
-            // LOGIC PHÂN LOẠI MỚI
-            if (level <= 5) {
-                colorClass = "sensor-green"; statusText = `Ngập ${level}cm - Bình thường`; tagColor = "#1db954";
-            } else if (level > 5 && level <= 10) {
-                colorClass = "sensor-orange"; statusText = `Ngập ${level}cm - Cảnh báo`; tagColor = "#f39c12"; isAlert = true;
-            } else {
-                colorClass = "sensor-red"; statusText = `Ngập ${level}cm - Ngập nặng`; tagColor = "#e74c3c"; isAlert = true;
+                humidEl.innerText = `--`;
+                humidBar.style.width = '0%';
             }
 
-            // Hiệu ứng nhảy số cho mực nước
-            if (prevValues.waterHP !== null && prevValues.waterHP !== level) {
-                popElement(statusTag);
-            }
-            prevValues.waterHP = level;
-
-            if (statusTag) {
-                statusTag.innerText = statusText;
-                statusTag.style.color = tagColor;
-                statusTag.style.borderColor = tagColor + '55';
-                statusTag.classList.toggle('alert', isAlert);
-            }
-            if (timeTag && stationTime) timeTag.innerText = stationTime;
-            if (coordTag) coordTag.innerText = `Tọa độ: ${location[0].toFixed(6)}, ${location[1].toFixed(6)}`;
-
-            if (currentMarker) map.removeLayer(currentMarker);
-
-            const customIcon = L.divIcon({
-                className: '',
-                html: `<div class="sensor-container ${colorClass}"><div class="sensor-core"></div></div>`,
-                iconSize: [18, 18], iconAnchor: [9, 9]
+            // 4. VẼ LẠI TRẠM HẢI PHÒNG
+            markerHP = renderStation({
+                location: locationHP, 
+                waterLevel: lvl,
+                tagId: "status-tag-hp", 
+                timeId: "time-hp", 
+                stationTime: timeHP,
+                currentMarker: markerHP, 
+                stationName: "TRẠM CẢM BIẾN HẢI PHÒNG",
+                coordTextId: "coord-text-hp"
             });
 
-            const newMarker = L.marker(location, { icon: customIcon }).addTo(map);
-            newMarker.bindPopup(
-                `<b>${stationName}</b><br>Trạng thái: <b>${statusText}</b><br>` +
-                `<small>Tọa độ: ${location[0].toFixed(6)}, ${location[1].toFixed(6)}</small><br>` +
-                `<small>Ghi nhận: ${stationTime || '--'}</small>`
-            );
-            return newMarker;
+            // 5. VẼ LẠI TRẠM HÀ NỘI (Giữ nguyên mặc định)
+            const tempElHN = document.getElementById("temp-hn");
+            const humidElHN = document.getElementById("humid-hn");
+            const tempBarHN = document.getElementById("temp-bar-hn");
+            const humidBarHN = document.getElementById("humid-bar-hn");
+
+            tempElHN.innerText = `${DEFAULT_HN_TEMP}°C`;
+            tempBarHN.style.width = `${DEFAULT_HN_TEMP}%`;
+            humidElHN.innerText = `${DEFAULT_HN_HUMID}%`;
+            humidBarHN.style.width = `${DEFAULT_HN_HUMID}%`;
+
+            if (prevValues.tempHN !== DEFAULT_HN_TEMP) {
+                popElement(tempElHN);
+                prevValues.tempHN = DEFAULT_HN_TEMP;
+            }
+            if (prevValues.humidHN !== DEFAULT_HN_HUMID) {
+                popElement(humidElHN);
+                prevValues.humidHN = DEFAULT_HN_HUMID;
+            }
+
+            markerHN = renderStation({
+                location: locationHN,
+                waterLevel: DEFAULT_HN_WATER,
+                tagId: "status-tag-hn",
+                timeId: "time-hn",
+                stationTime: timeHP,
+                currentMarker: markerHN,
+                stationName: "TRẠM CẢM BIẾN HÀ NỘI",
+                coordTextId: "coord-text-hn"
+            });
+
+            // Cập nhật thời gian đồng bộ
+            const now = new Date();
+            document.getElementById("update-time").innerText =
+                "Đồng bộ hệ thống lần cuối: " + now.toLocaleTimeString('vi-VN');
+
+        } catch (error) {
+            console.error("Lỗi kết nối dữ liệu:", error);
+        }
+    }
+
+    updateDashboard();
+    setInterval(updateDashboard, 1000);
+
+    /* ==========================================
+       DẪN ĐƯỜNG
+       ========================================== */
+    let routeA = null, routeB = null, markerA = null, markerB = null, routingControl = null;
+    let dangerCircle = null;
+    let currentFetchId = 0;
+
+    const hintEl = document.getElementById('routing-hint');
+    const hintText = document.getElementById('routing-hint-text');
+    const clearBtn = document.getElementById('routing-clear');
+    const btnToggleDirections = document.getElementById('btn-toggle-directions');
+
+    const RADIUS_DEG = 0.001;
+
+    function makeRouteIcon(letter, cls) {
+        return L.divIcon({
+            className: '', html: `<div class="route-marker ${cls}"><span>${letter}</span></div>`,
+            iconSize: [28, 28], iconAnchor: [14, 28]
+        });
+    }
+
+    function resetRouting() {
+        if (routingControl) { map.removeControl(routingControl); routingControl = null; }
+        if (markerA) { map.removeLayer(markerA); markerA = null; }
+        if (markerB) { map.removeLayer(markerB); markerB = null; }
+        if (dangerCircle) { map.removeLayer(dangerCircle); dangerCircle = null; }
+
+        routeA = null; routeB = null;
+        hintEl.classList.remove('hidden');
+        hintText.innerText = 'Nhấn điểm A trên bản đồ';
+        clearBtn.style.display = 'none';
+        btnToggleDirections.style.display = 'none';
+
+        btnToggleDirections.style.color = 'var(--text-primary)';
+        btnToggleDirections.style.borderColor = 'var(--border-strong)';
+    }
+    clearBtn.addEventListener('click', resetRouting);
+
+    function getDist(p1, p2) {
+        return Math.hypot(p1[0] - p2[0], p1[1] - p2[1]);
+    }
+
+    function isRouteSafe(coords) {
+        if (!coords) return true;
+        const center = locationHP;
+        for (let i = 0; i < coords.length - 1; i++) {
+            if (getDist(coords[i], center) < RADIUS_DEG) return false;
+            if (getDist(coords[i+1], center) < RADIUS_DEG) return false;
+        }
+        return true;
+    }
+
+    function fetchOsrm(waypoints) {
+        return new Promise(resolve => {
+            const coords = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
+            fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`)
+                .then(r => r.json()).then(data => resolve(data)).catch(() => resolve(null));
+        });
+    }
+
+    function renderRouting(waypoints, isAvoiding) {
+        const oldPanel = document.querySelector('.leaflet-routing-container');
+        const isPanelOpen = oldPanel ? oldPanel.classList.contains('show-panel') : false;
+
+        if (routingControl) {
+            map.removeControl(routingControl);
+            routingControl = null;
         }
 
-        // Hàm cập nhật dữ liệu chính
-        async function updateDashboard() {
-            try {
-                // 1. LẤY DỮ LIỆU MỰC NƯỚC TỪ FIREBASE
-                const firebaseRes = await fetch(FIREBASE_URL, { cache: "no-store" });
-                const waterLevelHP = await firebaseRes.json();
+        routingControl = L.Routing.control({
+            waypoints: waypoints,
+            router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1', language: 'vi' }),
+            lineOptions: { styles: [{ color: isAvoiding ? '#f39c12' : '#1db954', weight: 6, opacity: 0.85 }] },
+            createMarker: () => null,
+            addWaypoints: false,
+            draggableWaypoints: false,
+            fitSelectedRoutes: false,
+            show: true,
+            routeWhileDragging: false,
+            collapsible: true
+        }).addTo(map);
 
-                // 2. LẤY DỮ LIỆU TỌA ĐỘ TỪ GOOGLE SHEET
-                const gasRes = await fetch(GAS_URL, { cache: "no-store" });
-                const data = await gasRes.json();
+        if (isPanelOpen) {
+            setTimeout(() => {
+                const newPanel = document.querySelector('.leaflet-routing-container');
+                if (newPanel) newPanel.classList.add('show-panel');
+            }, 50);
+        }
 
-                // Xử lý tọa độ
+        hintEl.classList.add('hidden');
+        btnToggleDirections.style.display = 'flex';
+    }
+
+    btnToggleDirections.addEventListener('click', () => {
+        const panel = document.querySelector('.leaflet-routing-container');
+        if (panel) {
+            panel.classList.toggle('show-panel');
+            if (panel.classList.contains('show-panel')) {
+                btnToggleDirections.style.color = 'var(--accent)';
+                btnToggleDirections.style.borderColor = 'var(--accent)';
+            } else {
+                btnToggleDirections.style.color = 'var(--text-primary)';
+                btnToggleDirections.style.borderColor = 'var(--border-strong)';
+            }
+        }
+    });
+
+    async function buildRoute() {
+        if (!routeA || !routeB) return;
+
+        currentFetchId++;
+        const myFetchId = currentFetchId;
+
+        if (dangerCircle) { map.removeLayer(dangerCircle); dangerCircle = null; }
+
+        if (hpStatus === 'green') {
+            if (myFetchId === currentFetchId) {
+                renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
+                hintText.innerText = 'Trạm an toàn - Dẫn đường bình thường';
+            }
+            return;
+        }
+
+        dangerCircle = L.circle(locationHP, {
+            radius: 100, color: '#e74c3c', fillColor: '#e74c3c', fillOpacity: 0.2, weight: 2, dashArray: '5,5'
+        }).addTo(map);
+
+        hintText.innerText = 'Đang tìm đường né vùng ngập...';
+
+        const direct = await fetchOsrm([routeA, routeB]);
+        if (myFetchId !== currentFetchId) return;
+
+        if (direct && direct.routes && direct.routes.length > 0) {
+            const c = direct.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+            if (isRouteSafe(c)) {
+                renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
+                hintText.innerText = 'Tuyến A→B không đi qua vùng ngập';
+                return;
+            }
+        }
+
+        const centerLat = locationHP[0];
+        const centerLng = locationHP[1];
+
+        const angle = Math.atan2(routeB.lat - routeA.lat, routeB.lng - routeA.lng);
+        const offset = 0.0015;
+
+        const ptLeft = [
+            centerLat + offset * Math.sin(angle + Math.PI/2),
+            centerLng + offset * Math.cos(angle + Math.PI/2)
+        ];
+        const ptRight = [
+            centerLat + offset * Math.sin(angle - Math.PI/2),
+            centerLng + offset * Math.cos(angle - Math.PI/2)
+        ];
+
+        const routeL = await fetchOsrm([routeA, {lat: ptLeft[0], lng: ptLeft[1]}, routeB]);
+        if (myFetchId !== currentFetchId) return;
+
+        if (routeL && routeL.routes && routeL.routes.length > 0) {
+            const cL = routeL.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+            if (isRouteSafe(cL)) {
+                renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(ptLeft[0], ptLeft[1]), L.latLng(routeB.lat, routeB.lng)], true);
+                hintText.innerText = '⚠️ Đã tự động né vùng ngập';
+                return;
+            }
+        }
+
+        const routeR = await fetchOsrm([routeA, {lat: ptRight[0], lng: ptRight[1]}, routeB]);
+        if (myFetchId !== currentFetchId) return;
+
+        if (routeR && routeR.routes && routeR.routes.length > 0) {
+            const cR = routeR.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+            if (isRouteSafe(cR)) {
+                renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(ptRight[0], ptRight[1]), L.latLng(routeB.lat, routeB.lng)], true);
+                hintText.innerText = '⚠️ Đã tự động né vùng ngập';
+                return;
+            }
+        }
+
+        renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
+        hintText.innerText = '⚠️ Không có đường né, hãy chú ý!';
+    }
+
+    map.on('click', function(e) {
+        if (!routeA) {
+            routeA = e.latlng;
+            markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
+            hintText.innerText = 'Nhấn điểm B trên bản đồ';
+            clearBtn.style.display = 'block';
+        } else if (!routeB) {
+            routeB = e.latlng;
+            markerB = L.marker(routeB, { icon: makeRouteIcon('B', 'b') }).addTo(map);
+            buildRoute();
+        } else {
+            resetRouting();
+            routeA = e.latlng;
+            markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
+            hintText.innerText = 'Nhấn điểm B trên bản đồ';
+            clearBtn.style.display = 'block';
+        }
+    });
+
+    /* ==========================================
+       THEO DÕI GPS LIÊN TỤC
+       ========================================== */
+    const btnMyLocation = document.getElementById('btn-my-location');
+
+    let watchId = null;
+    let isTracking = false;
+
+    function setLocationBtn(state) {
+        btnMyLocation.classList.remove('loading');
+        if (state === 'loading') {
+            btnMyLocation.classList.add('loading');
+            btnMyLocation.innerHTML = '<span>🛑</span><span class="btn-label">Dừng</span>';
+            btnMyLocation.style.borderColor = '#e74c3c';
+            btnMyLocation.style.color = '#e74c3c';
+        } else if (state === 'tracking') {
+            btnMyLocation.innerHTML = '<span>🛑</span><span class="btn-label">Dừng</span>';
+            btnMyLocation.style.borderColor = '#e74c3c';
+            btnMyLocation.style.color = '#e74c3c';
+        } else {
+            btnMyLocation.innerHTML = '<span>📍</span><span class="btn-label">Vị trí</span>';
+            btnMyLocation.style.borderColor = 'var(--border-strong)';
+            btnMyLocation.style.color = 'var(--text-primary)';
+        }
+    }
+
+    btnMyLocation.addEventListener('click', () => {
+        if (isTracking) { stopTracking(); return; }
+
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+            alert("⚠️ LỖI BẢO MẬT:\nTrình duyệt yêu cầu trang web phải chạy trên HTTPS mới cho phép lấy GPS.\n\nHãy đưa code lên Github Pages, Vercel hoặc Netlify để chạy thử nhé!");
+            return;
+        }
+        if (!navigator.geolocation) {
+            alert("Trình duyệt của bạn không hỗ trợ lấy vị trí GPS.");
+            return;
+        }
+        startTracking();
+    });
+
+    function startTracking() {
+        isTracking = true;
+        setLocationBtn('loading');
+
+        watchId = navigator.geolocation.watchPosition(
+            (position) => {
+                setLocationBtn('tracking');
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                const currentLatLng = L.latLng(lat, lng);
+
+                if (!routeA) {
+                    resetRouting();
+                    routeA = currentLatLng;
+                    markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
+                    map.flyTo(routeA, 15);
+                    hintEl.classList.remove('hidden');
+                    hintText.innerText = 'Đang theo dõi... Nhấn chọn điểm B';
+                    clearBtn.style.display = 'block';
+                    return;
+                }
+
+                const distanceMoved = routeA.distanceTo(currentLatLng);
+                if (distanceMoved > 10) {
+                    routeA = currentLatLng;
+                    if (markerA) markerA.setLatLng(routeA);
+                    if (routeB) buildRoute();
+                }
+            },
+            (error) => {
+                console.warn("Lỗi GPS: ", error);
+                if (error.code === 1) {
+                    alert("Bạn đã từ chối cấp quyền vị trí. Hãy bật lại trong cài đặt trình duyệt.");
+                    stopTracking();
+                }
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    }
+
+    function stopTracking() {
+        if (watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+        }
+        isTracking = false;
+        setLocationBtn('idle');
+    }
+
+    /* ==========================================
+       PANEL CẬP NHẬT TỌA ĐỘ (SECRET)
+       ========================================== */
+    const overlay     = document.getElementById('coord-overlay');
+    const trigger     = document.getElementById('secret-trigger');
+    const closeBtn    = document.getElementById('coord-close');
+    const fillBtn     = document.getElementById('btn-fill-current');
+    const saveBtn     = document.getElementById('btn-save');
+    const msgEl       = document.getElementById('coord-msg');
+
+    const inLatHP = document.getElementById('in-lat-hp');
+    const inLngHP = document.getElementById('in-lng-hp');
+    const inLatHN = document.getElementById('in-lat-hn');
+    const inLngHN = document.getElementById('in-lng-hn');
+
+    function openPanel() {
+        fillCurrent();
+        msgEl.innerText = '';
+        msgEl.className = 'coord-msg';
+        overlay.classList.add('open');
+    }
+    function closePanel() { overlay.classList.remove('open'); }
+    function fillCurrent() {
+        inLatHP.value = locationHP[0];
+        inLngHP.value = locationHP[1];
+        inLatHN.value = locationHN[0];
+        inLngHN.value = locationHN[1];
+    }
+
+    trigger.addEventListener('click', openPanel);
+    closeBtn.addEventListener('click', closePanel);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closePanel(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+
+    fillBtn.addEventListener('click', () => {
+        fillCurrent();
+        msgEl.innerText = 'Đã điền tọa độ hiện tại.';
+        msgEl.className = 'coord-msg ok';
+    });
+
+    function isValidCoord(latStr, lngStr) {
+        const lat = parseFloat(String(latStr).replace(',', '.'));
+        const lng = parseFloat(String(lngStr).replace(',', '.'));
+        if (isNaN(lat) || isNaN(lng)) return false;
+        return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+    }
+
+    saveBtn.addEventListener('click', () => {
+        const latHP = inLatHP.value.trim();
+        const lngHP = inLngHP.value.trim();
+        const latHN = inLatHN.value.trim();
+        const lngHN = inLngHN.value.trim();
+
+        if (!isValidCoord(latHP, lngHP) || !isValidCoord(latHN, lngHN)) {
+            msgEl.innerText = 'Tọa độ không hợp lệ. Vui lòng kiểm tra lại.';
+            msgEl.className = 'coord-msg err';
+            return;
+        }
+
+        const url = GAS_URL +
+            '?lat_hp=' + encodeURIComponent(latHP) +
+            '&lng_hp=' + encodeURIComponent(lngHP) +
+            '&lat_hn=' + encodeURIComponent(latHN) +
+            '&lng_hn=' + encodeURIComponent(lngHN) +
+            '&_t=' + Date.now();
+
+        msgEl.innerText = 'Đang gửi lên Sheet...';
+        msgEl.className = 'coord-msg';
+        saveBtn.disabled = true;
+
+        fetch(url, { cache: "no-store" })
+            .then(r => r.json())
+            .then(data => {
                 locationHP = parseCoord(data.lat_hp, data.lng_hp, DEFAULT_HP);
                 locationHN = parseCoord(data.lat_hn, data.lng_hn, DEFAULT_HN);
-
-                // Xử lý thời gian
-                const timeHP = (data.time && data.date) ? `${data.time} (${data.date})` : new Date().toLocaleTimeString('vi-VN');
-
-                // LOGIC PHÂN LOẠI MÀU MỚI CHO BẢN ĐỒ
-                const lvl = Number(waterLevelHP !== null ? waterLevelHP : 0);
-                if (lvl <= 5) hpStatus = 'green';
-                else if (lvl > 5 && lvl <= 10) hpStatus = 'orange';
-                else hpStatus = 'red';
-
-                // 3. CẬP NHẬT NHIỆT ĐỘ / ĐỘ ẨM (Đang chờ dữ liệu)
-                const tempEl = document.getElementById("temp-hp");
-                const humidEl = document.getElementById("humid-hp");
-                const tempBar = document.getElementById("temp-bar");
-                const humidBar = document.getElementById("humid-bar");
-
-                tempEl.innerText = '--';
-                tempBar.style.width = '0%';
-                humidEl.innerText = '--';
-                humidBar.style.width = '0%';
-
-                // 4. VẼ LẠI TRẠM HẢI PHÒNG
-                markerHP = renderStation({
-                    location: locationHP, 
-                    waterLevel: lvl,
-                    tagId: "status-tag-hp", 
-                    timeId: "time-hp", 
-                    stationTime: timeHP,
-                    currentMarker: markerHP, 
-                    stationName: "TRẠM CẢM BIẾN HẢI PHÒNG",
-                    coordTextId: "coord-text-hp"
-                });
-
-                // 5. VẼ LẠI TRẠM HÀ NỘI
-                const tempElHN = document.getElementById("temp-hn");
-                const humidElHN = document.getElementById("humid-hn");
-                const tempBarHN = document.getElementById("temp-bar-hn");
-                const humidBarHN = document.getElementById("humid-bar-hn");
-
-                tempElHN.innerText = `${DEFAULT_HN_TEMP}°C`;
-                tempBarHN.style.width = `${DEFAULT_HN_TEMP}%`;
-                humidElHN.innerText = `${DEFAULT_HN_HUMID}%`;
-                humidBarHN.style.width = `${DEFAULT_HN_HUMID}%`;
-
-                if (prevValues.tempHN !== DEFAULT_HN_TEMP) {
-                    popElement(tempElHN);
-                    prevValues.tempHN = DEFAULT_HN_TEMP;
-                }
-                if (prevValues.humidHN !== DEFAULT_HN_HUMID) {
-                    popElement(humidElHN);
-                    prevValues.humidHN = DEFAULT_HN_HUMID;
-                }
-
-                markerHN = renderStation({
-                    location: locationHN,
-                    waterLevel: DEFAULT_HN_WATER,
-                    tagId: "status-tag-hn",
-                    timeId: "time-hn",
-                    stationTime: timeHP,
-                    currentMarker: markerHN,
-                    stationName: "TRẠM CẢM BIẾN HÀ NỘI",
-                    coordTextId: "coord-text-hn"
-                });
-
-                // Cập nhật thời gian đồng bộ
-                const now = new Date();
-                document.getElementById("update-time").innerText =
-                    "Đồng bộ hệ thống lần cuối: " + now.toLocaleTimeString('vi-VN');
-
-            } catch (error) {
-                console.error("Lỗi kết nối dữ liệu:", error);
-            }
-        }
-
-        updateDashboard();
-        setInterval(updateDashboard, 1000);
-
-        /* ==========================================
-           DẪN ĐƯỜNG
-           ========================================== */
-        let routeA = null, routeB = null, markerA = null, markerB = null, routingControl = null;
-        let dangerCircle = null;
-        let currentFetchId = 0;
-
-        const hintEl = document.getElementById('routing-hint');
-        const hintText = document.getElementById('routing-hint-text');
-        const clearBtn = document.getElementById('routing-clear');
-        const btnToggleDirections = document.getElementById('btn-toggle-directions');
-
-        const RADIUS_DEG = 0.001;
-
-        function makeRouteIcon(letter, cls) {
-            return L.divIcon({
-                className: '', html: `<div class="route-marker ${cls}"><span>${letter}</span></div>`,
-                iconSize: [28, 28], iconAnchor: [14, 28]
-            });
-        }
-
-        function resetRouting() {
-            if (routingControl) { map.removeControl(routingControl); routingControl = null; }
-            if (markerA) { map.removeLayer(markerA); markerA = null; }
-            if (markerB) { map.removeLayer(markerB); markerB = null; }
-            if (dangerCircle) { map.removeLayer(dangerCircle); dangerCircle = null; }
-
-            routeA = null; routeB = null;
-            hintEl.classList.remove('hidden');
-            hintText.innerText = 'Nhấn điểm A trên bản đồ';
-            clearBtn.style.display = 'none';
-            btnToggleDirections.style.display = 'none';
-
-            btnToggleDirections.style.color = 'var(--text-primary)';
-            btnToggleDirections.style.borderColor = 'var(--border-strong)';
-        }
-        clearBtn.addEventListener('click', resetRouting);
-
-        function getDist(p1, p2) {
-            return Math.hypot(p1[0] - p2[0], p1[1] - p2[1]);
-        }
-
-        function isRouteSafe(coords) {
-            if (!coords) return true;
-            const center = locationHP;
-            for (let i = 0; i < coords.length - 1; i++) {
-                if (getDist(coords[i], center) < RADIUS_DEG) return false;
-                if (getDist(coords[i+1], center) < RADIUS_DEG) return false;
-            }
-            return true;
-        }
-
-        function fetchOsrm(waypoints) {
-            return new Promise(resolve => {
-                const coords = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
-                fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`)
-                    .then(r => r.json()).then(data => resolve(data)).catch(() => resolve(null));
-            });
-        }
-
-        function renderRouting(waypoints, isAvoiding) {
-            const oldPanel = document.querySelector('.leaflet-routing-container');
-            const isPanelOpen = oldPanel ? oldPanel.classList.contains('show-panel') : false;
-
-            if (routingControl) {
-                map.removeControl(routingControl);
-                routingControl = null;
-            }
-
-            routingControl = L.Routing.control({
-                waypoints: waypoints,
-                router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1', language: 'vi' }),
-                lineOptions: { styles: [{ color: isAvoiding ? '#f39c12' : '#1db954', weight: 6, opacity: 0.85 }] },
-                createMarker: () => null,
-                addWaypoints: false,
-                draggableWaypoints: false,
-                fitSelectedRoutes: false,
-                show: true,
-                routeWhileDragging: false,
-                collapsible: true
-            }).addTo(map);
-
-            if (isPanelOpen) {
-                setTimeout(() => {
-                    const newPanel = document.querySelector('.leaflet-routing-container');
-                    if (newPanel) newPanel.classList.add('show-panel');
-                }, 50);
-            }
-
-            hintEl.classList.add('hidden');
-            btnToggleDirections.style.display = 'flex';
-        }
-
-        btnToggleDirections.addEventListener('click', () => {
-            const panel = document.querySelector('.leaflet-routing-container');
-            if (panel) {
-                panel.classList.toggle('show-panel');
-                if (panel.classList.contains('show-panel')) {
-                    btnToggleDirections.style.color = 'var(--accent)';
-                    btnToggleDirections.style.borderColor = 'var(--accent)';
-                } else {
-                    btnToggleDirections.style.color = 'var(--text-primary)';
-                    btnToggleDirections.style.borderColor = 'var(--border-strong)';
-                }
-            }
-        });
-
-        async function buildRoute() {
-            if (!routeA || !routeB) return;
-
-            currentFetchId++;
-            const myFetchId = currentFetchId;
-
-            if (dangerCircle) { map.removeLayer(dangerCircle); dangerCircle = null; }
-
-            // NẾU TRẠM AN TOÀN (<= 5cm) THÌ ĐI ĐƯỜNG BÌNH THƯỜNG
-            if (hpStatus === 'green') {
-                if (myFetchId === currentFetchId) {
-                    renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
-                    hintText.innerText = 'Trạm an toàn - Dẫn đường bình thường';
-                }
-                return;
-            }
-
-            // NẾU CÓ NGẬP (> 5cm) THÌ VẼ VÙNG ĐỎ VÀ TÌM ĐƯỜNG NÉ
-            dangerCircle = L.circle(locationHP, {
-                radius: 100, color: '#e74c3c', fillColor: '#e74c3c', fillOpacity: 0.2, weight: 2, dashArray: '5,5'
-            }).addTo(map);
-
-            hintText.innerText = 'Đang tìm đường né vùng ngập...';
-
-            const direct = await fetchOsrm([routeA, routeB]);
-            if (myFetchId !== currentFetchId) return;
-
-            if (direct && direct.routes && direct.routes.length > 0) {
-                const c = direct.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-                if (isRouteSafe(c)) {
-                    renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
-                    hintText.innerText = 'Tuyến A→B không đi qua vùng ngập';
-                    return;
-                }
-            }
-
-            const centerLat = locationHP[0];
-            const centerLng = locationHP[1];
-
-            const angle = Math.atan2(routeB.lat - routeA.lat, routeB.lng - routeA.lng);
-            const offset = 0.0015;
-
-            const ptLeft = [
-                centerLat + offset * Math.sin(angle + Math.PI/2),
-                centerLng + offset * Math.cos(angle + Math.PI/2)
-            ];
-            const ptRight = [
-                centerLat + offset * Math.sin(angle - Math.PI/2),
-                centerLng + offset * Math.cos(angle - Math.PI/2)
-            ];
-
-            const routeL = await fetchOsrm([routeA, {lat: ptLeft[0], lng: ptLeft[1]}, routeB]);
-            if (myFetchId !== currentFetchId) return;
-
-            if (routeL && routeL.routes && routeL.routes.length > 0) {
-                const cL = routeL.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-                if (isRouteSafe(cL)) {
-                    renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(ptLeft[0], ptLeft[1]), L.latLng(routeB.lat, routeB.lng)], true);
-                    hintText.innerText = '⚠️ Đã tự động né vùng ngập';
-                    return;
-                }
-            }
-
-            const routeR = await fetchOsrm([routeA, {lat: ptRight[0], lng: ptRight[1]}, routeB]);
-            if (myFetchId !== currentFetchId) return;
-
-            if (routeR && routeR.routes && routeR.routes.length > 0) {
-                const cR = routeR.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-                if (isRouteSafe(cR)) {
-                    renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(ptRight[0], ptRight[1]), L.latLng(routeB.lat, routeB.lng)], true);
-                    hintText.innerText = '⚠️ Đã tự động né vùng ngập';
-                    return;
-                }
-            }
-
-            renderRouting([L.latLng(routeA.lat, routeA.lng), L.latLng(routeB.lat, routeB.lng)], false);
-            hintText.innerText = '⚠️ Không có đường né, hãy chú ý!';
-        }
-
-        map.on('click', function(e) {
-            if (!routeA) {
-                routeA = e.latlng;
-                markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
-                hintText.innerText = 'Nhấn điểm B trên bản đồ';
-                clearBtn.style.display = 'block';
-            } else if (!routeB) {
-                routeB = e.latlng;
-                markerB = L.marker(routeB, { icon: makeRouteIcon('B', 'b') }).addTo(map);
-                buildRoute();
-            } else {
-                resetRouting();
-                routeA = e.latlng;
-                markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
-                hintText.innerText = 'Nhấn điểm B trên bản đồ';
-                clearBtn.style.display = 'block';
-            }
-        });
-
-        /* ==========================================
-           THEO DÕI GPS LIÊN TỤC
-           ========================================== */
-        const btnMyLocation = document.getElementById('btn-my-location');
-
-        let watchId = null;
-        let isTracking = false;
-
-        function setLocationBtn(state) {
-            btnMyLocation.classList.remove('loading');
-            if (state === 'loading') {
-                btnMyLocation.classList.add('loading');
-                btnMyLocation.innerHTML = '<span>🛑</span><span class="btn-label">Dừng</span>';
-                btnMyLocation.style.borderColor = '#e74c3c';
-                btnMyLocation.style.color = '#e74c3c';
-            } else if (state === 'tracking') {
-                btnMyLocation.innerHTML = '<span>🛑</span><span class="btn-label">Dừng</span>';
-                btnMyLocation.style.borderColor = '#e74c3c';
-                btnMyLocation.style.color = '#e74c3c';
-            } else {
-                btnMyLocation.innerHTML = '<span>📍</span><span class="btn-label">Vị trí</span>';
-                btnMyLocation.style.borderColor = 'var(--border-strong)';
-                btnMyLocation.style.color = 'var(--text-primary)';
-            }
-        }
-
-        btnMyLocation.addEventListener('click', () => {
-            if (isTracking) { stopTracking(); return; }
-
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                alert("⚠️ LỖI BẢO MẬT:\nTrình duyệt yêu cầu trang web phải chạy trên HTTPS mới cho phép lấy GPS.\n\nHãy đưa code lên Github Pages, Vercel hoặc Netlify để chạy thử nhé!");
-                return;
-            }
-            if (!navigator.geolocation) {
-                alert("Trình duyệt của bạn không hỗ trợ lấy vị trí GPS.");
-                return;
-            }
-            startTracking();
-        });
-
-        function startTracking() {
-            isTracking = true;
-            setLocationBtn('loading');
-
-            watchId = navigator.geolocation.watchPosition(
-                (position) => {
-                    setLocationBtn('tracking');
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    const currentLatLng = L.latLng(lat, lng);
-
-                    if (!routeA) {
-                        resetRouting();
-                        routeA = currentLatLng;
-                        markerA = L.marker(routeA, { icon: makeRouteIcon('A', 'a') }).addTo(map);
-                        map.flyTo(routeA, 15);
-                        hintEl.classList.remove('hidden');
-                        hintText.innerText = 'Đang theo dõi... Nhấn chọn điểm B';
-                        clearBtn.style.display = 'block';
-                        return;
-                    }
-
-                    const distanceMoved = routeA.distanceTo(currentLatLng);
-                    if (distanceMoved > 10) {
-                        routeA = currentLatLng;
-                        if (markerA) markerA.setLatLng(routeA);
-                        if (routeB) buildRoute();
-                    }
-                },
-                (error) => {
-                    console.warn("Lỗi GPS: ", error);
-                    if (error.code === 1) {
-                        alert("Bạn đã từ chối cấp quyền vị trí. Hãy bật lại trong cài đặt trình duyệt.");
-                        stopTracking();
-                    }
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-        }
-
-        function stopTracking() {
-            if (watchId !== null) {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
-            }
-            isTracking = false;
-            setLocationBtn('idle');
-        }
-
-        /* ==========================================
-           PANEL CẬP NHẬT TỌA ĐỘ (SECRET)
-           ========================================== */
-        const overlay     = document.getElementById('coord-overlay');
-        const trigger     = document.getElementById('secret-trigger');
-        const closeBtn    = document.getElementById('coord-close');
-        const fillBtn     = document.getElementById('btn-fill-current');
-        const saveBtn     = document.getElementById('btn-save');
-        const msgEl       = document.getElementById('coord-msg');
-
-        const inLatHP = document.getElementById('in-lat-hp');
-        const inLngHP = document.getElementById('in-lng-hp');
-        const inLatHN = document.getElementById('in-lat-hn');
-        const inLngHN = document.getElementById('in-lng-hn');
-
-        function openPanel() {
-            fillCurrent();
-            msgEl.innerText = '';
-            msgEl.className = 'coord-msg';
-            overlay.classList.add('open');
-        }
-        function closePanel() { overlay.classList.remove('open'); }
-        function fillCurrent() {
-            inLatHP.value = locationHP[0];
-            inLngHP.value = locationHP[1];
-            inLatHN.value = locationHN[0];
-            inLngHN.value = locationHN[1];
-        }
-
-        trigger.addEventListener('click', openPanel);
-        closeBtn.addEventListener('click', closePanel);
-        overlay.addEventListener('click', (e) => { if (e.target === overlay) closePanel(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
-
-        fillBtn.addEventListener('click', () => {
-            fillCurrent();
-            msgEl.innerText = 'Đã điền tọa độ hiện tại.';
-            msgEl.className = 'coord-msg ok';
-        });
-
-        function isValidCoord(latStr, lngStr) {
-            const lat = parseFloat(String(latStr).replace(',', '.'));
-            const lng = parseFloat(String(lngStr).replace(',', '.'));
-            if (isNaN(lat) || isNaN(lng)) return false;
-            return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
-        }
-
-        saveBtn.addEventListener('click', () => {
-            const latHP = inLatHP.value.trim();
-            const lngHP = inLngHP.value.trim();
-            const latHN = inLatHN.value.trim();
-            const lngHN = inLngHN.value.trim();
-
-            if (!isValidCoord(latHP, lngHP) || !isValidCoord(latHN, lngHN)) {
-                msgEl.innerText = 'Tọa độ không hợp lệ. Vui lòng kiểm tra lại.';
+                msgEl.innerText = '✅ Đã lưu tọa độ mới lên Google Sheet!';
+                msgEl.className = 'coord-msg ok';
+                updateDashboard(); 
+                setTimeout(closePanel, 1200);
+            })
+            .catch(err => {
+                console.error(err);
+                msgEl.innerText = '❌ Gửi thất bại. Kiểm tra kết nối hoặc quyền deploy Apps Script.';
                 msgEl.className = 'coord-msg err';
-                return;
-            }
-
-            const url = GAS_URL +
-                '?lat_hp=' + encodeURIComponent(latHP) +
-                '&lng_hp=' + encodeURIComponent(lngHP) +
-                '&lat_hn=' + encodeURIComponent(latHN) +
-                '&lng_hn=' + encodeURIComponent(lngHN) +
-                '&_t=' + Date.now();
-
-            msgEl.innerText = 'Đang gửi lên Sheet...';
-            msgEl.className = 'coord-msg';
-            saveBtn.disabled = true;
-
-            fetch(url, { cache: "no-store" })
-                .then(r => r.json())
-                .then(data => {
-                    locationHP = parseCoord(data.lat_hp, data.lng_hp, DEFAULT_HP);
-                    locationHN = parseCoord(data.lat_hn, data.lng_hn, DEFAULT_HN);
-                    msgEl.innerText = '✅ Đã lưu tọa độ mới lên Google Sheet!';
-                    msgEl.className = 'coord-msg ok';
-                    updateDashboard(); 
-                    setTimeout(closePanel, 1200);
-                })
-                .catch(err => {
-                    console.error(err);
-                    msgEl.innerText = '❌ Gửi thất bại. Kiểm tra kết nối hoặc quyền deploy Apps Script.';
-                    msgEl.className = 'coord-msg err';
-                })
-                .finally(() => { saveBtn.disabled = false; });
-        });
-    </script>
+            })
+            .finally(() => { saveBtn.disabled = false; });
+    });
+</script>
 </body>
 </html>
